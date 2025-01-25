@@ -18,7 +18,7 @@ function HowItWorks() {
                 gems, discover options tailored just for you!',
         step3Title: '3. Start Your Adventure',
         step3Details: 'Experience the best of Montreal like never before. With your personalized \
-                guide, navigate the city’s vibrant offerings and create unforgettable memories!'
+                guide, navigate the city’s vibrant offerings and create unforgettable memories! '
       
     },
     fr: {

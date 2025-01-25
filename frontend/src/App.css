@@ -159,10 +159,10 @@
   font-family: 'Poppins';
   font-weight: 700;
   position: relative;
-  top:150px;
+  top:230px;
   text-align: right;
   margin-left: 600px;
-  margin-right: 210px;
+  margin-right: 222px;
 }
 
 .step3Details{
@@ -172,9 +172,9 @@
   color:rgba(90, 90, 90, 0.77);
   line-height: 1.6;
   position: relative;
-  top:20px;
+  top:230px;
   text-align: left;
-  margin-left: 800px;
+  margin-left: 790px;
   margin-right: 35px;
 }
 

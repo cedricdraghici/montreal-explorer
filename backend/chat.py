@@ -2,11 +2,12 @@ import requests
 import time
 
 SERVER_URL = "http://127.0.0.1:5000/gpt"
+SESSION_ID = None
 
 def chat_client():
+    global SESSION_ID
     print("Travel Assistant Chat Client")
     print("Type 'exit' to quit\n")
-    time.sleep(0.5)  # Gives time to read the header
     
     while True:
         try:
@@ -18,18 +19,22 @@ def chat_client():
                 print("Please enter a valid message")
                 continue
 
-            # Send the message to the server
-            response = requests.post(
-                SERVER_URL,
-                json={"user_message": message}
-            )
+            # Prepare request payload
+            payload = {"user_message": message}
+            if SESSION_ID:
+                payload["session_id"] = SESSION_ID
 
+            # Send request
+            response = requests.post(SERVER_URL, json=payload)
+            
             if response.status_code == 200:
-                print("\nAssistant:", response.text)
+                data = response.json()
+                SESSION_ID = data['session_id']  # Update session ID
+                print("\nAssistant:", data['response'])
             else:
                 print(f"\nError: {response.status_code} - {response.text}")
 
-            print()  # Add empty line between exchanges
+            print()
 
         except requests.exceptions.ConnectionError:
             print("\nError: Could not connect to server. Make sure it's running!")

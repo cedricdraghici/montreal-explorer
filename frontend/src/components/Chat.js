@@ -31,10 +31,6 @@ function Chat() {
     color: message.sender === "user" ? "white" : "black",
   });
 
-  const handleHomeButton = () => {
-    navigate('/');
-  };
-
 
   return (
     <div style={styles.container}>

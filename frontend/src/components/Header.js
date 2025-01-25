@@ -1,34 +1,48 @@
-import React from 'react';
-import { useLanguage } from '../App'; 
+import React from "react";
+import { Link, useLocation } from "react-router-dom"; // Import useLocation
+import { useLanguage } from "../App";
 
 function Header() {
   const { language } = useLanguage();
+  const location = useLocation(); // Get the current location
 
   const translations = {
     en: {
-      header: 'Montreal Explorer',
-      aboutMontreal: 'ABOUT MONTREAL',
-      aboutUs: 'ABOUT US',
+      header: "Montreal Explorer",
+      aboutMontreal: "ABOUT MONTREAL",
+      aboutUs: "ABOUT US",
     },
     fr: {
-      header: 'Montréal Explorer',
-      aboutMontreal: 'DÉCOUVREZ MONTRÉAL',
-      aboutUs: 'DÉCOUVREZ-NOUS',
+      header: "Montréal Explorer",
+      aboutMontreal: "DÉCOUVREZ MONTRÉAL",
+      aboutUs: "DÉCOUVREZ-NOUS",
     },
   };
 
   return (
     <header className="headerSection">
       <div className="header">
-        {translations[language].header.split(' ')[0]}{' '}
-        <span style={{ fontSize: '50px' }}>
-          {translations[language].header.split(' ')[1]}
-        </span>
+        {/* Montreal Explorer linked to the homepage */}
+        <Link to="/" style={{ textDecoration: "none", color: "black" }}>
+          {translations[language].header.split(" ")[0]}{" "}
+          <span style={{ fontSize: "50px" }}>
+            {translations[language].header.split(" ")[1]}
+          </span>
+        </Link>
       </div>
       <nav>
         <ul className="nav-list">
-          <li><a href="#About Montreal">{translations[language].aboutMontreal}</a></li>
-          <li><a href="#About Us">{translations[language].aboutUs}</a></li>
+          {/* Show "ABOUT MONTREAL" and "ABOUT US" only on the homepage */}
+          {location.pathname === "/" && (
+            <>
+              <li>
+                <a href="#About Montreal">{translations[language].aboutMontreal}</a>
+              </li>
+              <li>
+                <a href="#About Us">{translations[language].aboutUs}</a>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
     </header>

@@ -1,15 +1,15 @@
+from flask import Flask, request, Response
 from flask_cors import CORS
-from flask import Flask, request
 from openai import OpenAI
 import uuid
-
+import json
 key = "sk-31b44503ea5243b3be8af9d7cd014122"
 
 app = Flask(__name__)
 CORS(app)
+app.debug = True
 client = OpenAI(api_key=key, base_url="https://api.deepseek.com")
 
-# Dictionary to store conversations {session_id: conversation}
 sessions = {}
 
 def initialize_session(session_id):
@@ -28,27 +28,38 @@ def convo():
         session_id = str(uuid.uuid4())
         initialize_session(session_id)
     
-    # Get conversation history for this session
     conversation = sessions[session_id]
     
-    # Process message
     user_message = data.get("user_message")
     if not user_message:
         return {"error": "Missing user_message"}, 400
     
     conversation.append({"role": "user", "content": user_message})
     
-    # Get AI response
-    response = client.chat.completions.create(
-        model="deepseek-chat",
-        messages=conversation
-    )
-    
-    # Update conversation history
-    assistant_response = response.choices[0].message.content
-    conversation.append({"role": "assistant", "content": assistant_response})
-    
-    return {
-        "session_id": session_id,
-        "response": assistant_response
-    }
+    # Create a generator for streaming responses
+    def generate():
+        full_response = []
+        stream = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=conversation,
+            stream=True
+        )
+        
+        for chunk in stream:
+            delta = chunk.choices[0].delta
+            if delta.content:
+                full_response.append(delta.content)
+                yield f"data: {json.dumps({
+                    'session_id': session_id,
+                    'delta': delta.content,
+                    'chunk_id': chunk.id,
+                    'finished': False
+                })}\n\n"
+        
+        conversation.append({"role": "assistant", "content": ''.join(full_response)})
+        yield f"data: {json.dumps({
+            'session_id': session_id,
+            'finished': True
+        })}\n\n"
+
+    return Response(generate(), mimetype="text/event-stream")

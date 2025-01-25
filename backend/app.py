@@ -1,3 +1,4 @@
+from flask_cors import CORS
 from flask import Flask, request
 from openai import OpenAI
 import uuid
@@ -5,6 +6,7 @@ import uuid
 key = "sk-31b44503ea5243b3be8af9d7cd014122"
 
 app = Flask(__name__)
+CORS(app)
 client = OpenAI(api_key=key, base_url="https://api.deepseek.com")
 
 # Dictionary to store conversations {session_id: conversation}

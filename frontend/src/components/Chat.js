@@ -1,23 +1,54 @@
 import React, { useState } from "react";
 
 function Chat() {
-  const [messages, setMessages] = useState([]); // State to store the message history
-  const [input, setInput] = useState(""); // State to store the current input
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [sessionId, setSessionId] = useState(null);
 
-  // Function to handle sending a message
-  const handleSendMessage = () => {
-    if (input.trim() !== "") {
-      // Add the user's message
-      setMessages([...messages, { text: input, sender: "user" }]);
-      setInput(""); // Clear the input
+  const handleSendMessage = async () => {
+    if (input.trim() === "") return;
 
-      // Simulate a response from the recipient after a short delay
-      setTimeout(() => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { text: "This is a response from the recipient.", sender: "recipient" },
-        ]);
-      }, 1000); // 1 second delay
+    // Save user message immediately
+    const userMessage = input;
+    setInput("");
+    setMessages(prev => [...prev, { text: userMessage, sender: "user" }]);
+
+    try {
+      // Send request to Flask backend
+      const response = await fetch("http://127.0.0.1:5000/gpt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          session_id: sessionId,
+          user_message: userMessage
+        }),
+      });
+
+      if (!response.ok) throw new Error("Request failed");
+
+      const data = await response.json();
+
+      // Update session ID if received new one
+      if (data.session_id && data.session_id !== sessionId) {
+        setSessionId(data.session_id);
+      }
+
+      // Add AI response to messages
+      setMessages(prev => [
+        ...prev,
+        { text: data.response, sender: "recipient" }
+      ]);
+    } catch (error) {
+      console.error("Error:", error);
+      setMessages(prev => [
+        ...prev,
+        { 
+          text: "Sorry, I'm having trouble connecting. Please try again.", 
+          sender: "recipient" 
+        }
+      ]);
     }
   };
 
@@ -44,6 +75,7 @@ function Chat() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
+          onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
         />
         <button style={styles.sendButton} onClick={handleSendMessage}>
           Send

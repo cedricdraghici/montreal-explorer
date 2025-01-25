@@ -6,7 +6,6 @@ function Chat() {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [sessionId, setSessionId] = useState(null);
   const [pendingResponse, setPendingResponse] = useState(false);
 
   
@@ -87,7 +86,6 @@ function Chat() {
     alignSelf: message.sender === "user" ? "flex-end" : "flex-start",
     backgroundColor: message.sender === "user" ? "#007BFF" : "#F3F3F3",
     color: message.sender === "user" ? "white" : "black",
-    position: 'relative',
   });
 
   const handleHomeButton = () => navigate('/');
@@ -105,16 +103,6 @@ function Chat() {
         {messages.map((message, index) => (
           <div key={index} style={messageStyles(message)}>
             {message.text}
-            {message.isStreaming && (
-              <div style={{
-                display: 'inline-block',
-                marginLeft: '8px',
-                animation: 'pulse 1s infinite',
-                fontSize: '0.8em'
-              }}>
-                ●
-              </div>
-            )}
           </div>
         ))}
       </div>
@@ -126,7 +114,6 @@ function Chat() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask anything..."
           onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-          disabled={pendingResponse}
         />
         <button 
           style={styles.sendButton} 

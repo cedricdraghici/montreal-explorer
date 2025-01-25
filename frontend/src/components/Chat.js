@@ -7,8 +7,17 @@ function Chat() {
   // Function to handle sending a message
   const handleSendMessage = () => {
     if (input.trim() !== "") {
-      setMessages([...messages, { text: input, sender: "user" }]); // Add the new message
+      // Add the user's message
+      setMessages([...messages, { text: input, sender: "user" }]);
       setInput(""); // Clear the input
+
+      // Simulate a response from the recipient after a short delay
+      setTimeout(() => {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { text: "This is a response from the recipient.", sender: "recipient" },
+        ]);
+      }, 1000); // 1 second delay
     }
   };
 
@@ -21,6 +30,8 @@ function Chat() {
             style={{
               ...styles.message,
               alignSelf: message.sender === "user" ? "flex-end" : "flex-start",
+              backgroundColor: message.sender === "user" ? "#007BFF" : "#f0f0f0",
+              color: message.sender === "user" ? "white" : "black",
             }}
           >
             {message.text}
@@ -64,7 +75,6 @@ const styles = {
   message: {
     padding: "8px 12px",
     borderRadius: "16px",
-    backgroundColor: "#f0f0f0",
     maxWidth: "70%",
     wordWrap: "break-word",
   },

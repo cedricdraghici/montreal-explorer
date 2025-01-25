@@ -20,6 +20,10 @@ function Chat() {
     setInput("");
   };
 
+  const handleHomeButton = () => {
+    navigate('/');
+  };
+
   const messageStyles = (message) => ({
     ...styles.message,
     alignSelf: message.sender === "user" ? "flex-end" : "flex-start",
@@ -64,6 +68,7 @@ function Chat() {
           ➤
         </button>
       </div>
+
     </div>
   );
 }
@@ -75,7 +80,7 @@ const styles = {
     justifyContent: "space-between",
     height: "100vh",
     width: "40%",
-    backgroundColor: "#FFF5F5", // Light background color
+    backgroundColor: "#FFF5F5",
     borderRight: "1px solid #E6E6E6",
     padding: "20px",
     boxSizing: "border-box",
@@ -121,6 +126,7 @@ const styles = {
     color: "white",
     border: "none",
     cursor: "pointer",
+
   },
 };
 

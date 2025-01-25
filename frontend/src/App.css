@@ -18,7 +18,7 @@ html, body {
 /* Background Image Styling */
 .image {
   opacity: 1;
-  background: url(./oldport.png) no-repeat center center;
+  background: url(./assets/oldport.png) no-repeat center center;
   position: absolute; /* Keeps it behind other elements */
   top: 0;
   left: 0;
@@ -241,3 +241,10 @@ html, body {
   background: none;
   border: 0px solid #000;
 }
+
+
+.home-button{
+  background: none;
+  border: 0px solid #000;
+}
+

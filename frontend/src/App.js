@@ -37,7 +37,7 @@ function App() {
         {location.pathname === "/" && <div className="image" />}
 
         {/* Header is consistent across all pages */}
-        <Header />
+        {location.pathname === "/" && <Header />}
 
         {/* Define Routes */}
         <Routes>

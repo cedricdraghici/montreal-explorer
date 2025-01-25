@@ -81,6 +81,7 @@ html, body {
   font-size: 75px; /* Adjust the font size */
   font-family: 'Newsreader', serif;
   font-weight: 800; /* Explicit weight for consistent font rendering */
+  margin-top: 200px; /* Use margin instead of relative positioning */
   color: rgb(255, 255, 255); /* White text color */
 }
 
@@ -117,6 +118,16 @@ html, body {
   font-size: 30px;
   font-family: 'Poppins', sans-serif;
   font-weight: 800;
+  margin-top: 300px;
+  text-align: center;
+}
+
+.HowItWorks{
+  font-size:30px;
+  font-family: 'Poppins';
+  font-weight: 800;
+  position: relative;
+  top:5px;
   text-align: center;
 }
 
@@ -124,6 +135,8 @@ html, body {
   font-size: 35px;
   font-family: 'Poppins';
   font-weight: 700;
+  position: relative;
+  top:35px;
   text-align: right;
   margin-left: 750px;
   margin-right: 150px;
@@ -135,6 +148,8 @@ html, body {
   font-weight: 380;
   color: rgba(90, 90, 90, 0.77);
   line-height: 1.6;
+  position: relative;
+  top:60px;
   text-align: left;
   margin-left: 800px;
   margin-right: 35px;
@@ -144,6 +159,8 @@ html, body {
   font-size: 35px;
   font-family: 'Poppins';
   font-weight: 700;
+  position: relative;
+  top:150px;
   text-align: left;
   margin-left: 50px;
   margin-right: 750px;
@@ -155,6 +172,8 @@ html, body {
   font-weight: 380;
   color: rgba(90, 90, 90, 0.77);
   line-height: 1.6;
+  position: relative;
+  top:165px;
   text-align: left;
   margin-left: 40px;
   margin-right: 780px;
@@ -164,6 +183,8 @@ html, body {
   font-size: 35px;
   font-family: 'Poppins';
   font-weight: 700;
+  position: relative;
+  top:230px;
   text-align: right;
   margin-left: 600px;
   margin-right: 222px;
@@ -179,6 +200,18 @@ html, body {
   margin-left: 790px;
   margin-right: 35px;
 }
+
+.HomeIconText{
+  font-size: 18px;
+  font-family: 'Roboto', serif;
+  font-weight: 600;
+  color: rgba(42, 41, 41, 0.98);
+  position: relative;
+  top:-4px;
+
+}
+
+
 
 /* Language Switcher */
 .language-switcher {
@@ -202,6 +235,16 @@ html, body {
 .language-switcher button:hover {
   background-color: #000;
   color: #fff;
+}
+
+.home-button{
+  background: none;
+  border: 0px solid #000;
+}
+
+.home-button{
+  background: none;
+  border: 0px solid #000;
 }
 
 /* Map view */

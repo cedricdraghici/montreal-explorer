@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Smooch+Sans&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 
 .image {
     opacity: 1;
@@ -54,77 +57,149 @@
     text-align: center; /* Center text inside */
 }
   
-  .hero-title {
-    font-size: 75px; /* Adjust the font size */
-    font-family: 'Newsreader';
-    font-weight: 800;
-    position: relative;
-    top: 200px;
-    color: rgb(255, 255, 255); /* Black text color */
-  }
-  
-  .hero-subtitle {
-    font-size: 43px; /* Smaller subtitle */
-    font-family: 'Newsreader';
-    font-weight: 800;
-    position: relative;
-    top: 117px;
-    margin-left: 150px;
-    margin-right: 150px;
-    color: rgb(255, 255, 255); /* Subtle gray */
-  }
-  
-  .hero-button {
-    font-size: 40px; /* Adjust button size */
-    font-weight: 700;
-    font-family: 'Newsreader';
-    color:#000000dc;
-    padding: 10px 20px; /* Space inside the button */
-    background-color: #ffffff64; /* White background */
-    border: 0.8px solid #131313; /* Black border */
-    position: relative;
-    top: 120px;
-    border-radius: 15px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
-  }
-  
-  .hero-button:hover {
-    background-color: #1d0f0fa5; /* Black on hover */
-    color: #fff; /* White text on hover */
-  }
+.hero-title {
+  font-size: 75px; /* Adjust the font size */
+  font-family: 'Newsreader';
+  font-weight: 800;
+  position: relative;
+  top: 200px;
+  color: rgb(255, 255, 255); /* Black text color */
+}
 
-  .HowItWorks{
-    font-size: 30px;
-    font-family: 'Newsreader';
-    font-weight: 800;
-    position: relative;
-    top:250px;
-
-  }
-
-    .language-switcher {
-    position: absolute;
-    top: 70px;
-    right: 20px;
-    display: flex;
-    gap: 10px;
-  }
+.hero-subtitle {
+  font-size: 43px; /* Smaller subtitle */
+  font-family: 'Newsreader';
+  font-weight: 800;
+  position: relative;
+  top: 117px;
+  margin-left: 150px;
+  margin-right: 150px;
+  color: rgb(255, 255, 255); /* Subtle gray */
+}
   
-  .language-switcher button {
-    background: none;
-    border: 1px solid #000;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: all 0.3s ease;
-  }
-  
-  .language-switcher button:hover {
-    background-color: #000;
-    color: #fff;
-  }
+.hero-button {
+  font-size: 40px; /* Adjust button size */
+  font-weight: 700;
+  font-family: 'Newsreader';
+  color:#000000dc;
+  padding: 10px 20px; /* Space inside the button */
+  background-color: #ffffff64; /* White background */
+  border: 0.8px solid #131313; /* Black border */
+  position: relative;
+  top: 120px;
+  border-radius: 15px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
+}
+
+.hero-button:hover {
+  background-color: #1d0f0fa5; /* Black on hover */
+  color: #fff; /* White text on hover */
+}
+
+.HowItWorks{
+  font-size:30px;
+  font-family: 'Poppins';
+  font-weight: 800;
+  position: relative;
+  top:300px;
+  text-align: center;
+}
+
+.step1Title{
+  font-size: 35px;
+  font-family: 'Poppins';
+  font-weight: 700;
+  position: relative;
+  top:25px;
+  text-align: right;
+  margin-left: 750px;
+  margin-right: 150px;
+}
+
+.step1Details{
+  font-size: 18px;
+  font-family: "Roboto", serif;
+  font-weight: 380;
+  color:rgba(90, 90, 90, 0.77);
+  line-height: 1.6;
+  position: relative;
+  top:20px;
+  text-align: left;
+  margin-left: 800px;
+  margin-right: 35px;
+}
+
+.step2Title{
+  font-size: 35px;
+  font-family: 'Poppins';
+  font-weight: 700;
+  position: relative;
+  top:150px;
+  text-align: left;
+  margin-left: 50px;
+  margin-right: 750px;
+}
+
+.step2Details{
+  font-size: 18px;
+  font-family: "Roboto", serif;
+  font-weight: 380;
+  color:rgba(90, 90, 90, 0.77);
+  line-height: 1.6;
+  position: relative;
+  top:145px;
+  text-align: left;
+  margin-left: 40px;
+  margin-right: 780px;
+}
+
+.step3Title{
+  font-size: 35px;
+  font-family: 'Poppins';
+  font-weight: 700;
+  position: relative;
+  top:150px;
+  text-align: right;
+  margin-left: 600px;
+  margin-right: 210px;
+}
+
+.step3Details{
+  font-size: 18px;
+  font-family: "Roboto", serif;
+  font-weight: 380;
+  color:rgba(90, 90, 90, 0.77);
+  line-height: 1.6;
+  position: relative;
+  top:20px;
+  text-align: left;
+  margin-left: 800px;
+  margin-right: 35px;
+}
+
+.language-switcher {
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.language-switcher button {
+  background: none;
+  border: 1px solid #000;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.language-switcher button:hover {
+  background-color: #000;
+  color: #fff;
+}
 
 
   

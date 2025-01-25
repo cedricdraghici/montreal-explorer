@@ -8,9 +8,10 @@ function HowItWorks() {
     en: {
         title: 'How to Explore with Us',
         step1Title:'1. Customize Your Interests',
-        step1Details: 'Share your preferences with us, whether it’s gourmet dining, \
-                live music, stand-up comedy, or cultural experiences. \
-                We’ll use this information to curate activities and events that match your unique tastes!',
+        step1Details: 'Let us know how you plan to explore Montreal! \
+                Share your preferences for transportation, the length of your stay, \
+                your budget, and the experiences you’re most excited about—whether\
+                it’s gourmet dining, live music, stand-up comedy, or cultural adventures.',
         step2Title: '2. Get Recommendations',
         step2Details: 'Based on your interests, explore a personalized list of events \
                 and activities happening around you. From exclusive concerts to hidden culinary \

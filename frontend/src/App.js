@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import HowItWorks from "./components/HowItWorks";
@@ -7,7 +7,6 @@ import MapViewPage from "./components/MapViewPage";
 import Chat from "./components/Chat";
 import "./App.css";
 
-// Create Language Context
 const LanguageContext = createContext();
 
 export const useLanguage = () => useContext(LanguageContext);
@@ -24,16 +23,23 @@ function LanguageSwitcher() {
 
 function App() {
   const [language, setLanguage] = useState("en"); // Default: English
-  const location = useLocation(); // Get current route location
+  const location = useLocation(); // Get the current route location
 
   const switchLanguage = (lang) => setLanguage(lang);
 
   return (
     <LanguageContext.Provider value={{ language, switchLanguage }}>
       <div className="app">
-        {/* Render the background image only on the home page */}
+        {/* Ensure LanguageSwitcher is always displayed */}
+        <LanguageSwitcher />
+
+        {/* Conditionally render the background */}
         {location.pathname === "/" && <div className="image" />}
+
+        {/* Header is consistent across all pages */}
         <Header />
+
+        {/* Define Routes */}
         <Routes>
           <Route
             path="/"

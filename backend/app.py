@@ -3,6 +3,8 @@ from flask_cors import CORS
 from openai import OpenAI
 import uuid
 import json
+from datetime import datetime, timedelta
+
 key = "sk-31b44503ea5243b3be8af9d7cd014122"
 
 app = Flask(__name__)
@@ -13,10 +15,13 @@ client = OpenAI(api_key=key, base_url="https://api.deepseek.com")
 sessions = {}
 
 def initialize_session(session_id):
-    sessions[session_id] = [{
-        "role": "system",
-        "content": "You are a helpful travel guide, giving an itinerary of events, attractions and restaurants based on user input"
-    }]
+    sessions[session_id] = {
+        "conversation": [{
+            "role": "system",
+            "content": "You are a helpful travel guide..."
+        }],
+        "last_activity": datetime.now()
+    }
 
 @app.route("/gpt", methods=["POST"])
 def convo():
@@ -28,7 +33,7 @@ def convo():
         session_id = str(uuid.uuid4())
         initialize_session(session_id)
     
-    conversation = sessions[session_id]
+    conversation = sessions[session_id]["conversation"]
     
     user_message = data.get("user_message")
     if not user_message:
@@ -63,3 +68,34 @@ def convo():
         })}\n\n"
 
     return Response(generate(), mimetype="text/event-stream")
+
+@app.route("/conversation/done", methods=["POST"])
+def end_conversation():
+    data = request.get_json()
+    session_id = data.get("session_id")
+    
+    if not session_id:
+        return {"error": "Missing session_id"}, 400
+    
+    if session_id in sessions:
+        # Get conversation before deletion
+        conversation = sessions[session_id]["conversation"]
+        del sessions[session_id]
+        return {
+            "status": "success",
+            "message": "Conversation ended",
+            "session_id": session_id,
+            "conversation_length": len(conversation)
+        }, 200
+    else:
+        return {"error": "Invalid session_id"}, 404
+        
+#add automatic cleanup for inactive sessions
+def cleanup_sessions():
+    now = datetime.now()
+    expired = [
+        sid for sid, data in sessions.items() 
+        if (now - data["last_activity"]) > timedelta(hours=1)
+    ]
+    for sid in expired:
+        del sessions[sid]

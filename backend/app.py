@@ -1,4 +1,6 @@
 from flask import Flask, request, Response
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_, and_
 from flask_cors import CORS
 from openai import OpenAI
 import uuid
@@ -14,19 +16,85 @@ client = OpenAI(api_key=key, base_url="https://api.deepseek.com")
 
 sessions = {}
 
-def initialize_session(session_id):
-    sessions[session_id] = {
-        "conversation": [{
-            "role": "system",
-            "content": "You are a helpful travel guide..."
-        }],
-        "last_activity": datetime.now()
-    }
+
+
+# Database Configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:fuka1010@localhost/montreal_events'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# Event Model
+class Event(db.Model):
+    __tablename__ = 'your_table_name'  # Replace with actual table name
+    id = db.Column(db.Integer, primary_key=True)
+    titre = db.Column(db.String(255))
+    description = db.Column(db.Text)
+    date_debut = db.Column(db.Date)
+    date_fin = db.Column(db.Date)
+    type_evenement = db.Column(db.String(100))
+    emplacement = db.Column(db.String(100))
+    adresse_principale = db.Column(db.Text)
+    latitude = db.Column(db.Numeric(10, 8))
+    longitude = db.Column(db.Numeric(11, 8))
+
+def get_events_by_date(start_date, end_date):
+    """Query events happening between dates (inclusive)"""
+    return Event.query.filter(
+        or_(
+            and_(Event.date_debut >= start_date, Event.date_debut <= end_date),
+            and_(Event.date_fin >= start_date, Event.date_fin <= end_date),
+            and_(Event.date_debut <= start_date, Event.date_fin >= end_date)
+        )
+    ).all()
+
+def format_events_for_gpt(events):
+    """Create natural language description of events"""
+    if not events:
+        return "No scheduled events found for these dates"
+    
+    event_descriptions = []
+    for event in events:
+        desc = f"{event.titre} ({event.type_evenement}) at {event.emplacement}: "
+        desc += f"{event.description} from {event.date_debut} to {event.date_fin}"
+        event_descriptions.append(desc)
+    
+    return "Current Montreal events:\n- " + "\n- ".join(event_descriptions)
+
+
 
 @app.route("/gpt", methods=["POST"])
 def convo():
     data = request.get_json()
     
+    # Extract dates
+    start_date_str = data.get('start_date')
+    end_date_str = data.get('end_date')
+    date_context = ""
+    
+    if start_date_str and end_date_str:
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+            events = get_events_by_date(start_date, end_date)
+            date_context = format_events_for_gpt(events)
+        except Exception as e:
+            return {"error": f"Invalid date format: {str(e)}"}, 400
+
+
+
+    def initialize_session(session_id):
+        sessions[session_id] = {
+            "conversation": [{
+            "role": "system",
+            "content": f"""You are a Montreal travel expert. Use this event data:
+                {date_context}
+                Provide detailed itineraries with event addresses and dates.
+                Include practical info about costs and registration when available."""
+            }],
+            "last_activity": datetime.now()
+        }
+
+
     # Get or create session ID
     session_id = data.get("session_id")
     if not session_id or session_id not in sessions:
@@ -99,3 +167,5 @@ def cleanup_sessions():
     ]
     for sid in expired:
         del sessions[sid]
+
+

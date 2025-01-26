@@ -23,7 +23,19 @@ function HowItWorks() {
       
     },
     fr: {
-        title: 'Comment Explorer avec Nous',
+        title: 'Comment explorer avec nous',
+        step1Title: '1. Personnalisez vos intérêts',
+        step1Details: 'Faites-nous savoir comment vous prévoyez d’explorer Montréal ! \
+        Partagez vos préférences concernant le transport, la durée de votre séjour, \
+        votre budget, et les expériences qui vous enthousiasment le plus—que ce soit \
+        la gastronomie, la musique live, le stand-up ou les aventures culturelles.',
+        step2Title: '2. Recevez des recommandations',
+        step2Details: 'En fonction de vos intérêts, découvrez une liste personnalisée \
+        d’événements et d’activités qui se déroulent autour de vous. Des concerts exclusifs \
+        aux trésors culinaires cachés, trouvez des options adaptées juste pour vous !',
+        step3Title: '3. Commencez l\'aventure',
+        step3Details: 'Découvrez le meilleur de Montréal comme jamais auparavant. Avec \
+        votre guide personnalisé, explorez les offres vibrantes de la ville et créez des souvenirs inoubliables !'
     },
   };
   return(

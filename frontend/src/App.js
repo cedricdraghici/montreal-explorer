@@ -16,6 +16,7 @@ function LanguageSwitcher() {
   return (
     <div className="language-switcher">
       <button onClick={() => switchLanguage("en")}>EN</button>
+      <span className="slash">/</span>
       <button onClick={() => switchLanguage("fr")}>FR</button>
     </div>
   );

@@ -22,7 +22,7 @@ def initialize_session(session_id):
         "conversation": [{
             "role": "system",
             "content": """You are a helpful travel guide. Provide friendly responses, recommended times and durations. Begin with an interactive conversation to pick the right hotel. If the user says "GENERATE", and only then, include 
-            a hidden JSON array of itinerary updates using this format (DO NOT ANNOUNCE TO USER PRIOR):
+            a hidden JSON array of itinerary updates using this format (DO NOT ANNOUNCE TO USER PRIOR). This should be continuous, no other text should follow your JSON's:
             ```json
             [{
                 "day": 1,

@@ -57,8 +57,9 @@ html, body {
   flex-wrap: nowrap;
   gap: 180px; /* Adjust the spacing between nav items */
   font-family: 'Kanit', serif;
+  color:hsla(0, 0%, 0%, 0.802);
   font-size: 30px;
-  font-weight: 400;
+  font-weight: 00;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -227,6 +228,6 @@ html, body {
   color:hsla(0, 0%, 0%, 0.802);
 }
 .language-switcher button:hover {
-  background-color: #1d0f0fa5;
-  color: #fff;
+  background-color: transparent;
+  color: #6c6a6a;
 }

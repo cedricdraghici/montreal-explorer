@@ -8,14 +8,14 @@ function Hero() {
 
   const translations = {
     en: {
-      title: 'Welcome to Montreal Explorer!',
+      title: 'Welcome to Montréal Explorer!',
       subtitle: "Your personal AI-powered guide to the city's best events, hidden gems, and tailored adventures.",
-      button: 'Start your journey →',
+      button: 'Start your journey',
     },
     fr: {
       title: 'Bienvenue à Montréal Explorer!',
       subtitle: 'Votre guide personnalisé alimenté par l’IA pour les meilleurs événements, trésors cachés et aventures sur mesure.',
-      button: 'Commencez votre aventure →',
+      button: 'Commencez votre aventure',
     },
   };
 

@@ -20,6 +20,7 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* Four columns */
     gap: 12px; /* Spacing between grid items */
+    height: auto;
     justify-items: center; /* Center-align items in the grid */
   }
   
@@ -49,8 +50,11 @@
   }
   
   .team-member-intro {
-    font-size: 14px;
-    line-height: 1.4;
+    font-size: 18px;
+    font-weight: 300px;
+    line-height: 1.7;
+    text-align: left;
     color: #555; /* Medium gray for intro text */
+
   }
   

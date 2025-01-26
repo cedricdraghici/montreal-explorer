@@ -15,18 +15,30 @@ function AboutUs() {
     en: {
       title: "About Us",
       teamMembers: [
-        { name: "Cedric", intro: "" },
+        { name: "Cedric", intro: "I’m a 20-year-old Computer Science major at McGill University with \
+            a strong passion for Artificial Intelligence, real estate, and languages. Fluent in Romanian, \
+            French, and English, and with growing proficiency in Korean and Spanish, I’m deeply inspired by\
+             multicultural environments and the intersection of language and AI. Beyond academics, my interests \
+             include reading movie critiques and staying active through skiing, biking, and running." },
         { name: "Fuka", intro: "" },
-        { name: "Sara", intro: "" },
+        { name: "Sara", intro: "Hi, I’m Sara. I'm majoring in CS. For this website, I collaborated with Cedric on \
+            the front-end development, which has been an exciting learning experience. Outside of coding, I enjoy skateboarding, \
+            archery, and exploring new hobbies that keep life adventurous and fun!" },
         { name: "Malachi", intro: "" },
       ],
     },
     fr: {
       title: "Notre Équipe",
       teamMembers: [
-        { name: "Cédric", intro: "" },
+        { name: "Cédric", intro: "Je suis une étudiante de 20 ans en informatique à l'Université McGill, avec une \
+            grande passion pour l'intelligence artificielle, l'immobilier et les langues. Je parle couramment le roumain, \
+            le français et l'anglais, et je progresse en coréen et en espagnol. Je suis profondément inspirée par les \
+            environnements multiculturels et l'intersection entre les langues et l'intelligence artificielle. En dehors de \
+            mes études, mes intérêts incluent la lecture de critiques de films et les activités sportives comme le ski, le vélo et la course à pied." },
         { name: "Fuka", intro: "" },
-        { name: "Sara", intro: "" },
+        { name: "Sara", intro: "Allô, je m'appelle Sara. Je suis étudiante en informatique. Pour ce site web, j'ai collaboré \
+            avec Cedric sur le développement front-end, ce qui a été une expérience d'apprentissage passionnante. En dehors du \
+            codage, j'aime faire du skateboard, du tir à l'arc et explorer de nouveaux passe-temps qui rendent la vie aventureuse et amusante !" },
         { name: "Malachi", intro: "" },
       ],
     },

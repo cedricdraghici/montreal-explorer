@@ -10,16 +10,22 @@
   box-sizing: border-box;
 }
 
+/* Ensure the body and html take full height */
+html, body {
+  height: 100%;
+}
+
 /* Background Image Styling */
 .image {
   opacity: 1;
-  background: url(./oldport.png) no-repeat center center;
-  position: absolute; /* Fixed positioning for consistent behavior */
+  background: url(./assets/oldport.png) no-repeat center center;
+  position: absolute; /* Keeps it behind other elements */
   top: 0;
   left: 0;
-  width: 1440px;
-  height: 752px;
+  width: 100vw; /* Full width of the viewport */
+  height: 100vh; /* Full height of the viewport */
   z-index: -1; /* Keeps it behind other elements */
+  background-size: cover; /* Ensures the image covers the entire container */
 }
 
 /* Header Section */
@@ -47,9 +53,9 @@
   position: relative;
   top: 58px;
   gap: 60px; /* Adjust the spacing between nav items */
-  font-family: 'Newsreader', serif;
+  font-family: 'Poppins', serif;
   font-size: 30px;
-  font-weight: 600;
+  font-weight: 500;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -65,7 +71,9 @@
   display: flex; /* Flexbox for alignment */
   flex-direction: column; /* Stack items vertically */
   align-items: center; /* Center horizontally */
+  justify-content: center; /* Center vertically */
   text-align: center; /* Center text inside */
+  height: 100vh; /* Full height of the viewport */
   margin: 0 auto; /* Ensure it's centered in the viewport */
 }
 
@@ -73,7 +81,6 @@
   font-size: 75px; /* Adjust the font size */
   font-family: 'Newsreader', serif;
   font-weight: 800; /* Explicit weight for consistent font rendering */
-  margin-top: 200px; /* Use margin instead of relative positioning */
   color: rgb(255, 255, 255); /* White text color */
 }
 
@@ -110,36 +117,74 @@
   font-size: 30px;
   font-family: 'Poppins', sans-serif;
   font-weight: 800;
-  margin-top: 300px;
   text-align: center;
 }
 
-.step1Title,
-.step2Title,
-.step3Title {
+.step1Title {
   font-size: 35px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins';
   font-weight: 700;
-  margin-top: 25px;
+  text-align: right;
+  margin-left: 750px;
+  margin-right: 150px;
 }
 
-.step1Details,
-.step2Details,
-.step3Details {
+.step1Details {
   font-size: 18px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 400; /* Adjusted for readability */
+  font-family: "Roboto", serif;
+  font-weight: 380;
   color: rgba(90, 90, 90, 0.77);
   line-height: 1.6;
-  margin: 20px 35px; /* Consistent margin across steps */
   text-align: left;
+  margin-left: 800px;
+  margin-right: 35px;
+}
+
+.step2Title {
+  font-size: 35px;
+  font-family: 'Poppins';
+  font-weight: 700;
+  text-align: left;
+  margin-left: 50px;
+  margin-right: 750px;
+}
+
+.step2Details {
+  font-size: 18px;
+  font-family: "Roboto", serif;
+  font-weight: 380;
+  color: rgba(90, 90, 90, 0.77);
+  line-height: 1.6;
+  text-align: left;
+  margin-left: 40px;
+  margin-right: 780px;
+}
+
+.step3Title {
+  font-size: 35px;
+  font-family: 'Poppins';
+  font-weight: 700;
+  text-align: right;
+  margin-left: 600px;
+  margin-right: 222px;
+}
+
+.step3Details {
+  font-size: 18px;
+  font-family: "Roboto", serif;
+  font-weight: 380;
+  color: rgba(90, 90, 90, 0.77);
+  line-height: 1.6;
+  text-align: left;
+  margin-left: 790px;
+  margin-right: 35px;
 }
 
 /* Language Switcher */
 .language-switcher {
   position: absolute;
   top: 70px;
-  right: 20px;
+  right: 10px;
   display: flex;
   gap: 10px;
 }

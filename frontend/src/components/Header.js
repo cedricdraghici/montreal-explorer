@@ -8,14 +8,14 @@ function Header() {
 
   const translations = {
     en: {
-      header: "Montreal Explorer",
-      aboutMontreal: "ABOUT MONTREAL",
-      aboutUs: "ABOUT US",
+      header: "Montréal Explorer",
+      aboutMontreal: "Discover the City",
+      aboutUs: "About Us",
     },
     fr: {
       header: "Montréal Explorer",
-      aboutMontreal: "DÉCOUVREZ MONTRÉAL",
-      aboutUs: "DÉCOUVREZ-NOUS",
+      aboutMontreal: "Découvrez la ville",
+      aboutUs: "Notre équipe",
     },
   };
 

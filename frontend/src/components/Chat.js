@@ -4,17 +4,26 @@ function Chat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [sessionId, setSessionId] = useState(null);
+  const [pendingResponse, setPendingResponse] = useState(false);
 
   const handleSendMessage = async () => {
-    if (input.trim() === "") return;
+    if (input.trim() === "" || pendingResponse) return;
 
-    // Save user message immediately
     const userMessage = input;
     setInput("");
-    setMessages(prev => [...prev, { text: userMessage, sender: "user" }]);
+    
+    const initialLength = messages.length;
+    const assistantMessageIndex = initialLength + 1;
+
+    setMessages(prev => [
+      ...prev,
+      { text: userMessage, sender: "user" },
+      { text: "", sender: "recipient", isStreaming: true }
+    ]);
+    
+    setPendingResponse(true);
 
     try {
-      // Send request to Flask backend
       const response = await fetch("http://127.0.0.1:5000/gpt", {
         method: "POST",
         headers: {
@@ -27,45 +36,81 @@ function Chat() {
       });
 
       if (!response.ok) throw new Error("Request failed");
+      
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
 
-      const data = await response.json();
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-      // Update session ID if received new one
-      if (data.session_id && data.session_id !== sessionId) {
-        setSessionId(data.session_id);
+        buffer += decoder.decode(value, { stream: true });
+        const chunks = buffer.split('\n\n');
+        
+        for (let i = 0; i < chunks.length - 1; i++) {
+          const chunk = chunks[i].trim();
+          if (!chunk.startsWith('data: ')) continue;
+
+          try {
+            const data = JSON.parse(chunk.slice(6)); 
+            if (data.session_id) setSessionId(data.session_id);
+
+            if (data.delta) {
+              setMessages(prev => prev.map((msg, index) => 
+                index === assistantMessageIndex ? {
+                  ...msg,
+                  text: msg.text + data.delta,
+                  isStreaming: !data.finished
+                } : msg
+              ));
+            }
+
+            if (data.finished) {
+              setPendingResponse(false);
+            }
+          } catch (error) {
+            console.error('Error parsing chunk:', error);
+          }
+        }
+        buffer = chunks[chunks.length - 1];
       }
-
-      // Add AI response to messages
-      setMessages(prev => [
-        ...prev,
-        { text: data.response, sender: "recipient" }
-      ]);
     } catch (error) {
       console.error("Error:", error);
-      setMessages(prev => [
-        ...prev,
-        { 
-          text: "Sorry, I'm having trouble connecting. Please try again.", 
-          sender: "recipient" 
-        }
-      ]);
+      setMessages(prev => prev.map((msg, index) => 
+        index === assistantMessageIndex ? {
+          text: error.message,
+          sender: "recipient"
+        } : msg
+      ));
+      setPendingResponse(false);
     }
   };
+
+  const messageStyles = (message) => ({
+    ...styles.message,
+    alignSelf: message.sender === "user" ? "flex-end" : "flex-start",
+    backgroundColor: message.sender === "user" ? "#007BFF" : "#f0f0f0",
+    color: message.sender === "user" ? "white" : "black",
+    position: 'relative',
+  });
 
   return (
     <div style={styles.container}>
       <div style={styles.chatBox}>
         {messages.map((message, index) => (
-          <div
-            key={index}
-            style={{
-              ...styles.message,
-              alignSelf: message.sender === "user" ? "flex-end" : "flex-start",
-              backgroundColor: message.sender === "user" ? "#007BFF" : "#f0f0f0",
-              color: message.sender === "user" ? "white" : "black",
-            }}
-          >
+          <div key={index} style={messageStyles(message)}>
             {message.text}
+            {message.isStreaming && (
+              <div style={{
+                display: 'inline-block',
+                marginLeft: '8px',
+                animation: 'pulse 1s infinite',
+                fontSize: '0.8em'
+              }}>
+                ●
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -76,16 +121,27 @@ function Chat() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
           onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+          disabled={pendingResponse}
         />
-        <button style={styles.sendButton} onClick={handleSendMessage}>
-          Send
+        <button 
+          style={styles.sendButton} 
+          onClick={handleSendMessage}
+          disabled={pendingResponse}
+        >
+          {pendingResponse ? '...' : 'Send'}
         </button>
       </div>
+      <style>{`
+        @keyframes pulse {
+          0% { opacity: 1; }
+          50% { opacity: 0.2; }
+          100% { opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 }
 
-// Basic styles for the chat interface
 const styles = {
   container: {
     display: "flex",
@@ -129,6 +185,10 @@ const styles = {
     border: "none",
     borderRadius: "8px",
     cursor: "pointer",
+    '&:disabled': {
+      backgroundColor: "#ccc",
+      cursor: "not-allowed"
+    }
   },
 };
 

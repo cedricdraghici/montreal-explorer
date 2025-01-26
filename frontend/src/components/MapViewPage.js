@@ -129,8 +129,8 @@ function MapViewPage() {
         </div>
 
         {/* Right panel */}
-        <div className={`right-panel ${isCollapsed ? "collapsed" : ""}`}>
-          <div className="rectangle">
+        <div className="right-panel">
+          <div className={`rectangle ${isCollapsed ? "collapsed" : ""}`}>
             <MapIFrame />
           </div>
           <img className="curved-rec" src={curvedRec} alt="Curved Background" />
@@ -150,7 +150,6 @@ function MapViewPage() {
             src={viewListIcon}
             alt="View List Icon"
             onClick={handleViewListClick}
-            style={{ cursor: "pointer" }}
           />
         </div>
 
@@ -192,64 +191,42 @@ function MapViewPage() {
             gap: "10px",
           }}
         >
-          
-              
-        {/* Messages */}
-        <div
-        style={{
-          position: "absolute",
-          top: "48%",
-          left: "12%",
-          transform: "translate(-25%, -50%)",
-          width: "50.7%",
-          height: "70%",
-          padding: "20px",
-          overflowY: "auto",
-          backgroundColor: "transparent",
-          borderRadius: "10px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-        }}
-      >
-        {messages.map((msg, i) => {
-          const isChatGPTResponse = msg.sender === "assistant";
-          const isHovered = hoveredIndex === i;
+          {messages.map((msg, i) => {
+            const isChatGPTResponse = msg.sender === "assistant";
+            const isHovered = hoveredIndex === i;
 
-          return (
-            <div
-              key={i}
-              onMouseEnter={() => isChatGPTResponse && setHoveredIndex(i)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              style={{
-                textAlign: "left",
-                margin: "0",
-                padding: "10px",
-                backgroundColor: isHovered
-                  ? "#D9D9D9"
-                  : isChatGPTResponse
-                  ? "#EDEDED"
-                  : "transparent",
-                borderRadius: "10px",
-                maxWidth: "100%",
-                wordWrap: "break-word",
-                alignSelf: "flex-start",
-                fontFamily:
-                  '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                transition: "background-color 0.3s ease",
-                whiteSpace: "pre-wrap", // Preserve line breaks and spaces
-              }}
-            >
-              {isChatGPTResponse ? <b>{msg.text}</b> : msg.text}
-            </div>
-          );
-        })}
+            return (
+              <div
+                key={i}
+                onMouseEnter={() => isChatGPTResponse && setHoveredIndex(i)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                style={{
+                  textAlign: "left",
+                  margin: "0",
+                  padding: "10px",
+                  backgroundColor: isHovered
+                    ? "#D9D9D9"
+                    : isChatGPTResponse
+                    ? "#EDEDED"
+                    : "transparent",
+                  borderRadius: "10px",
+                  maxWidth: "100%",
+                  wordWrap: "break-word",
+                  alignSelf: "flex-start",
+                  fontFamily:
+                    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  transition: "background-color 0.3s ease",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                {isChatGPTResponse ? <b>{msg.text}</b> : msg.text}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
-    </div>
-
-  </div>
-);
+  );
 }
 
 export default MapViewPage;

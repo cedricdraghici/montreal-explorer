@@ -154,8 +154,8 @@ function ViewList() {
                     routeData?.api_directions?.routes?.[0]?.legs?.[index] && (
                       <div className="direct-step">
                         <span>
-                          {selectedMode === "DRIVING" ? "🚗" : 
-                           selectedMode === "WALKING" ? "🚶" : "🚴"} 
+                          {selectedMode === "DRIVING" ? "🚗 " : 
+                           selectedMode === "WALKING" ? "🚶 " : "🚴 "} 
                           {routeData.api_directions.routes[0].legs[index].duration.text} 
                           {selectedMode.toLowerCase()}
                         </span>

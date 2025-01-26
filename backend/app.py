@@ -12,20 +12,16 @@ key = "sk-31b44503ea5243b3be8af9d7cd014122"
 app = Flask(__name__)
 CORS(app)
 app.debug = True
-client = OpenAI(api_key=key, base_url="https://api.deepseek.com")
-
-sessions = {}
-
-
 
 # Database Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:fuka1010@localhost/montreal_events'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+
 # Event Model
 class Event(db.Model):
-    __tablename__ = 'your_table_name'  # Replace with actual table name
+    __tablename__ = 'montreal_events'  
     id = db.Column(db.Integer, primary_key=True)
     titre = db.Column(db.String(255))
     description = db.Column(db.Text)
@@ -36,6 +32,32 @@ class Event(db.Model):
     adresse_principale = db.Column(db.Text)
     latitude = db.Column(db.Numeric(10, 8))
     longitude = db.Column(db.Numeric(11, 8))
+
+client = OpenAI(api_key=key, base_url="https://api.deepseek.com")
+
+sessions = {}
+
+def initialize_session(session_id, date_context=""):
+    sessions[session_id] = {
+        "conversation": [{
+            "role": "system",
+            "content": f"""You are a Montreal travel expert. Use this event data:
+                {date_context}
+                Provide detailed itineraries with event addresses and dates.
+                Include practical info about costs and registration when available."""
+        }],
+        "last_activity": datetime.now()
+    }
+
+#add automatic cleanup for inactive sessions
+def cleanup_sessions():
+    now = datetime.now()
+    expired = [
+        sid for sid, data in sessions.items() 
+        if (now - data["last_activity"]) > timedelta(hours=1)
+    ]
+    for sid in expired:
+        del sessions[sid]
 
 def get_events_by_date(start_date, end_date):
     """Query events happening between dates (inclusive)"""
@@ -82,19 +104,6 @@ def convo():
 
 
 
-    def initialize_session(session_id):
-        sessions[session_id] = {
-            "conversation": [{
-            "role": "system",
-            "content": f"""You are a Montreal travel expert. Use this event data:
-                {date_context}
-                Provide detailed itineraries with event addresses and dates.
-                Include practical info about costs and registration when available."""
-            }],
-            "last_activity": datetime.now()
-        }
-
-
     # Get or create session ID
     session_id = data.get("session_id")
     if not session_id or session_id not in sessions:
@@ -137,6 +146,8 @@ def convo():
 
     return Response(generate(), mimetype="text/event-stream")
 
+
+
 @app.route("/conversation/done", methods=["POST"])
 def end_conversation():
     data = request.get_json()
@@ -157,15 +168,7 @@ def end_conversation():
         }, 200
     else:
         return {"error": "Invalid session_id"}, 404
-        
-#add automatic cleanup for inactive sessions
-def cleanup_sessions():
-    now = datetime.now()
-    expired = [
-        sid for sid, data in sessions.items() 
-        if (now - data["last_activity"]) > timedelta(hours=1)
-    ]
-    for sid in expired:
-        del sessions[sid]
 
 
+if __name__ == "__main__":
+    app.run()

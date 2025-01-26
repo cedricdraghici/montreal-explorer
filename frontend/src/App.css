@@ -93,7 +93,7 @@ html, body {
   font-size: 43px; /* Smaller subtitle */
   font-family: 'Newsreader', serif;
   font-weight: 800;
-  margin: 10px 150px; /* Reduce margins for spacing */
+  margin: 21px 150px; /* Reduce margins for spacing */
   color: rgb(255, 255, 255); /* White text color */
 }
 
@@ -105,16 +105,16 @@ html, body {
   color: #000000dc;
   padding: 10px 20px; /* Space inside the button */
   background-color: #ffffff64; /* Semi-transparent white background */
-  border: 0.8px solid #131313; /* Black border */
-  margin-top: 20px; /* Reduce spacing below subtitle */
+  border: 0px solid #131313; /* Black border */
+  margin-top: 1px; /* Reduce spacing below subtitle */
   border-radius: 15px; /* Rounded corners */
   cursor: pointer; /* Pointer cursor on hover */
   transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
 }
 
 .hero-button:hover {
-  background-color: #1d0f0fa5; /* Black on hover */
-  color: #fff; /* White text on hover */
+  background-color: #a79e9edd; /* Black on hover */
+  
 }
 
 

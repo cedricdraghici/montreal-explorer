@@ -212,17 +212,19 @@ html, body {
 .language-switcher button {
   background: none;
   border: 0px solid #000;
+  color:hsla(0, 0%, 0%, 0.802);
   padding: 5px 10px;
   cursor: pointer;
   border-radius: 5px;
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 600;
   transition: all 0.3s ease;
 }
 
 .slash{
   font-size: 24px;
   font-weight: 700;
+  color:hsla(0, 0%, 0%, 0.802);
 }
 .language-switcher button:hover {
   background-color: #1d0f0fa5;

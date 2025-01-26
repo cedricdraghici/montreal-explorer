@@ -7,6 +7,7 @@ import uuid
 import json
 from datetime import datetime, timedelta
 
+
 key = "sk-31b44503ea5243b3be8af9d7cd014122"
 
 app = Flask(__name__)

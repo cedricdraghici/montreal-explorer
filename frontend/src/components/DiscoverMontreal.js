@@ -1,7 +1,10 @@
 import React from 'react';
+import homeIcon from "../assets/homeBlue.svg"; // Home Icon import
+
 
 function DiscoverMontreal() {
   return (
+    
     <div className="DiscoverMontreal" style={{ padding: '2rem', fontFamily: 'Inter, sans-serif', backgroundColor: '#FFFCF2', color: '#335058' }}>
       <header style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2.5rem', fontWeight: '700', color: '#335058', padding:'1rem'}}>Discover Montreal</h1>
@@ -9,6 +12,17 @@ function DiscoverMontreal() {
           Welcome to Montreal, where culture, cuisine, and creativity come together. Explore and savor the beauty of this vibrant city.
         </p>
       </header>
+      <a href="/" style={{
+        position: 'absolute', // Position the button relative to the parent container
+        top: '3.2rem', // Adjust the vertical position (higher on the page)
+        left: '2.5rem', // Adjust the horizontal position (e.g., near the left edge)
+        }}>
+        <img className="home-icon" src={homeIcon} alt="Home Icon" style={{
+          width: '40px', // Set icon size
+          height: '40px',
+          cursor: 'pointer', // Add a pointer cursor for interaction
+        }} />
+      </a>
 
       <div style={{
         display: 'grid',

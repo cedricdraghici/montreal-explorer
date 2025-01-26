@@ -187,10 +187,8 @@ const styles = {
   sendButton: {
     padding: "12px 18px",
     borderRadius: "50%",
-    backgroundColor: "#007BFF",
     color: "white",
     border: "none",
-    cursor: "pointer",
   },
 };
 

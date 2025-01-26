@@ -1,5 +1,10 @@
 import React, { createContext, useState, useContext } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import HowItWorks from "./components/HowItWorks";
@@ -7,6 +12,7 @@ import MapViewPage from "./components/MapViewPage";
 import Chat from "./components/Chat";
 import DiscoverMontreal from "./components/DiscoverMontreal";
 import AboutUs from "./components/AboutUs";
+import ViewList from "./components/ViewList";
 import "./App.css";
 
 const LanguageContext = createContext();
@@ -25,38 +31,39 @@ function LanguageSwitcher() {
 }
 
 function App() {
-  const [language, setLanguage] = useState("en"); // Default: English
-  const location = useLocation(); // Get the current route location
+  const [language, setLanguage] = useState("en");
+  const location = useLocation();
 
   const switchLanguage = (lang) => setLanguage(lang);
 
   return (
     <LanguageContext.Provider value={{ language, switchLanguage }}>
       <div className="app">
-        {/* Ensure LanguageSwitcher is always displayed */}
+        {/* Always show language switcher */}
         <LanguageSwitcher />
 
-        {/* Conditionally render the background */}
+        {/* Show the background only on the homepage */}
         {location.pathname === "/" && <div className="image" />}
 
-        {/* Header is consistent across all pages */}
+        {/* Show the Header only on the homepage */}
         {location.pathname === "/" && <Header />}
 
-        {/* Define Routes */}
+        {/* Define routes */}
         <Routes>
           <Route
             path="/"
             element={
-              <div>
+              <>
                 <Hero />
                 <HowItWorks />
-              </div>
+              </>
             }
           />
           <Route path="/DiscoverMontreal" element={<DiscoverMontreal />} />
           <Route path="/AboutUs" element={<AboutUs />} />
-          <Route path="/map-view" element={<MapViewPage />} />
+          <Route path="/mapview" element={<MapViewPage />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/viewlist" element={<ViewList />} />
         </Routes>
       </div>
     </LanguageContext.Provider>

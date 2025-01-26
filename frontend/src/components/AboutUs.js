@@ -1,54 +1,75 @@
 import React from "react";
+import { useLanguage } from "../App"; // Import the LanguageContext hook
 import person1Photo from "../assets/Cedric.jpg";
 import person2Photo from "../assets/Fuka.PNG";
 import person3Photo from "../assets/Sara.png";
 import person4Photo from "../assets/Malachi.png";
-import "./AboutUs.css";
 import homeIcon from "../assets/homeBlue.svg"; // Home Icon import
-
+import "./AboutUs.css";
 
 function AboutUs() {
-  const teamMembers = [
-    {
-      name: "Cedric",
-      intro: "",
-      photo: person1Photo,
+  const { language } = useLanguage(); // Access current language
+
+  // Translations for team members and the page
+  const translations = {
+    en: {
+      title: "About Us",
+      teamMembers: [
+        { name: "Cedric", intro: "" },
+        { name: "Fuka", intro: "" },
+        { name: "Sara", intro: "" },
+        { name: "Malachi", intro: "" },
+      ],
     },
-    {
-      name: "Fuka",
-      intro: "",
-      photo: person2Photo,
+    fr: {
+      title: "Notre Équipe",
+      teamMembers: [
+        { name: "Cédric", intro: "" },
+        { name: "Fuka", intro: "" },
+        { name: "Sara", intro: "" },
+        { name: "Malachi", intro: "" },
+      ],
     },
-    {
-      name: "Sara",
-      intro: "",
-      photo: person3Photo,
-    },
-    {
-      name: "Malachi",
-      intro: "",
-      photo: person4Photo,
-    },
-  ];
+  };
+
+  // Get the translated content based on the selected language
+  const { title, teamMembers } = translations[language];
 
   return (
     <div className="about-us-container">
-        <a href="/" style={{
-        position: 'absolute', // Position the button relative to the parent container
-        top: '3.2rem', // Adjust the vertical position (higher on the page)
-        left: '2.5rem', // Adjust the horizontal position (e.g., near the left edge)
-        }}>
-        <img className="home-icon" src={homeIcon} alt="Home Icon" style={{
-          width: '40px', // Set icon size
-          height: '40px',
-          cursor: 'pointer', // Add a pointer cursor for interaction
-        }} />
+      {/* Home Icon */}
+      <a
+        href="/"
+        style={{
+          position: "absolute",
+          top: "3.2rem",
+          left: "2.5rem",
+        }}
+      >
+        <img
+          className="home-icon"
+          src={homeIcon}
+          alt="Home Icon"
+          style={{
+            width: "40px",
+            height: "40px",
+            cursor: "pointer",
+          }}
+        />
       </a>
-      <h1 className="about-us-title">About Us</h1>
+
+      {/* Page Title */}
+      <h1 className="about-us-title">{title}</h1>
+
+      {/* Team Members */}
       <div className="team-grid">
         {teamMembers.map((member, index) => (
           <div key={index} className="team-member">
-            <img src={member.photo} alt={member.name} className="team-member-photo" />
+            <img
+              src={[person1Photo, person2Photo, person3Photo, person4Photo][index]} // Assign corresponding photo
+              alt={member.name}
+              className="team-member-photo"
+            />
             <h2 className="team-member-name">{member.name}</h2>
             <p className="team-member-intro">{member.intro}</p>
           </div>

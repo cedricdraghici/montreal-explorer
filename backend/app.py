@@ -6,6 +6,8 @@ from openai import OpenAI
 import uuid
 import json
 from datetime import datetime, timedelta
+import re
+from dateutil.parser import parse
 
 
 key = "sk-31b44503ea5243b3be8af9d7cd014122"
@@ -185,7 +187,8 @@ def is_trip_planning(user_message):
     }
     return any(kw in user_message.lower() for kw in trip_keywords)
 
-# Modified GPT endpoint
+
+# GPT endpoint
 @app.route("/gpt", methods=["POST"])
 def convo():
     data = request.get_json()
@@ -193,42 +196,67 @@ def convo():
     session_id = data.get("session_id") or str(uuid.uuid4())
 
     try:
-        # Get hotel data first
+        # First determine query type
         hotels = get_hotels_with_details()
-        hotel_context = format_hotels_for_gpt(hotels)
+        is_hotel = is_hotel_query(user_message, hotels)
+        is_metro = "metro" in user_message or "station" in user_message
 
-        # Check for hotel query FIRST
-        if is_hotel_query(user_message, hotels):
+        # Only extract dates if needed
+        date_range_required = not (is_hotel or is_metro)
+        start_date_str = end_date_str = None
+
+        if date_range_required:
+            # Date extraction logic for event planning
+            start_date_str = data.get('start_date')
+            end_date_str = data.get('end_date')
+            
+            if not start_date_str or not end_date_str:
+                msg_start, msg_end = extract_dates_from_message(user_message)
+                if msg_start and msg_end:
+                    start_date_str = msg_start.isoformat()
+                    end_date_str = msg_end.isoformat()
+                else:
+                    raise ValueError("Date range required for event planning")
+
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+            events = get_events_by_date(start_date, end_date)
+            event_context = format_events_for_gpt(events)
+        else:
+            events = []
+            event_context = ""
+
+        # Build system prompt based on query type
+        hotel_context = format_hotels_for_gpt(hotels)
+        
+        if is_metro:
+            system_prompt = f"""METRO LOCATOR MODE:
+            Available Hotels with Metro Access:
+            {hotel_context}
+            
+            Requirements:
+            1. Identify metro stations near mentioned locations
+            2. Include line information
+            3. Ignore date references"""
+            
+        elif is_hotel:
             system_prompt = f"""HOTEL SEARCH MODE:
             {hotel_context}
             
             Requirements:
             1. Recommend hotels matching the request
-            2. Ignore any date references
-            3. Focus on amenities and metro access"""
+            2. Focus on metro access
+            3. Ignore date references"""
             
         else:
-            # Only process dates for event/trip planning
-            start_date_str = data.get('start_date')
-            end_date_str = data.get('end_date')
-            
-            if not start_date_str or not end_date_str:
-                return jsonify({"error": "Dates required for event planning"}), 400
-                
-            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
-            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-            
-            events = get_events_by_date(start_date, end_date)
-            event_context = format_events_for_gpt(events)
-            
             system_prompt = f"""TRIP PLANNING MODE:
             {hotel_context}
             {event_context}
             
             Requirements:
-            1. Create date-specific itineraries
-            2. Link hotels to event locations"""
+            1. Create date-specific itineraries"""
 
+        # Session management
         if session_id not in sessions:
             sessions[session_id] = {
                 "conversation": [{"role": "system", "content": system_prompt}],
@@ -242,6 +270,7 @@ def convo():
             {"role": "user", "content": user_message}
         )
 
+        # Response generation
         def generate():
             full_response = []
             stream = client.chat.completions.create(
@@ -260,13 +289,16 @@ def convo():
             )
             yield "data: [DONE]\n\n"
         
-        # MUST RETURN RESPONSE HERE
         return Response(generate(), mimetype="text/event-stream")
+
     except ValueError as e:
-        return jsonify({"error": f"Date error: {str(e)}"}), 400
+        return jsonify({"error": str(e)}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-        
+
+
+
+
 sessions = {}
 
 def initialize_session(session_id, date_context=""):
@@ -325,6 +357,30 @@ def format_events_for_gpt(events):
         event_list.append(entry)
     
     return "CURRENT MONTREAL EVENTS:\n" + "\n\n".join(event_list)
+
+def extract_dates_from_message(text):
+    """Parse dates from natural language text"""
+    date_patterns = [
+    r"(\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*\d{1,2}\s*-\s*\d{1,2}\b)",  # May10-15 or May 10-15
+    r"(\b\d{4}-\d{2}-\d{2}\s+to\s+\d{4}-\d{2}-\d{2}\b)"
+]
+    
+    for pattern in date_patterns:
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match:
+            date_str = match.group(1)
+            try:
+                if '-' in date_str:
+                    start_str, end_str = date_str.split('-', 1)
+                    start_date = parse(start_str.strip(), fuzzy=True).date()
+                    end_date = parse(end_str.strip(), fuzzy=True).date()
+                    return start_date, end_date
+                else:
+                    single_date = parse(date_str, fuzzy=True).date()
+                    return single_date, single_date
+            except:
+                continue
+    return None, None
 
 
 # @app.route("/gpt", methods=["POST"])

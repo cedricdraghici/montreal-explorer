@@ -105,7 +105,7 @@ html, body {
   padding: 10px 20px; /* Space inside the button */
   background-color: #ffffff64; /* Semi-transparent white background */
   border: 0.8px solid #131313; /* Black border */
-  margin-top: 10px; /* Reduce spacing below subtitle */
+  margin-top: 20px; /* Reduce spacing below subtitle */
   border-radius: 15px; /* Rounded corners */
   cursor: pointer; /* Pointer cursor on hover */
   transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
@@ -225,6 +225,6 @@ html, body {
   font-weight: 700;
 }
 .language-switcher button:hover {
-  background-color: #000;
+  background-color: #1d0f0fa5;
   color: #fff;
 }

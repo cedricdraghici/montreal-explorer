@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom"; // Import useLocation
 import { useLanguage } from "../App";
+import DiscoverMontreal from "./DiscoverMontreal";
 
 function Header() {
   const { language } = useLanguage();
@@ -8,14 +9,14 @@ function Header() {
 
   const translations = {
     en: {
-      header: "Montreal Explorer",
-      aboutMontreal: "ABOUT MONTREAL",
-      aboutUs: "ABOUT US",
+      header: "Montréal Explorer",
+      aboutMontreal: "Discover the City",
+      aboutUs: "About Us",
     },
     fr: {
       header: "Montréal Explorer",
-      aboutMontreal: "DÉCOUVREZ MONTRÉAL",
-      aboutUs: "DÉCOUVREZ-NOUS",
+      aboutMontreal: "Découvrez la ville",
+      aboutUs: "Notre équipe",
     },
   };
 
@@ -36,10 +37,10 @@ function Header() {
           {location.pathname === "/" && (
             <>
               <li>
-                <a href="#About Montreal">{translations[language].aboutMontreal}</a>
+                <Link to="./DiscoverMontreal">{translations[language].aboutMontreal}</Link>
               </li>
               <li>
-                <a href="#About Us">{translations[language].aboutUs}</a>
+              <Link to="./AboutUs">{translations[language].aboutUs}</Link>
               </li>
             </>
           )}

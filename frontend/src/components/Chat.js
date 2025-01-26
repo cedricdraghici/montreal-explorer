@@ -9,6 +9,7 @@ function Chat() {
   const [sessionId, setSessionId] = useState(null);
   const [pendingResponse, setPendingResponse] = useState(false);
 
+  
   const handleSendMessage = async () => {
     if (input.trim() === "" || pendingResponse) return;
 
@@ -25,7 +26,7 @@ function Chat() {
     setPendingResponse(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/gpt", {
+      const response = await fetch("http://10.122.141.184:4000/gpt", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ session_id: sessionId, user_message: userMessage }),
@@ -146,58 +147,50 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    height: "100vh",
-    width: "40%",
+    height: "100vh", // Full viewport height
+    width: "100vw", // Full viewport width
     backgroundColor: "#FFF5F5",
-    borderRight: "1px solid #E6E6E6",
     padding: "20px",
     boxSizing: "border-box",
-  },
-  iconBar: {
-    display: "flex",
-    gap: "20px",
-    padding: "10px 0",
-    borderBottom: "1px solid #E6E6E6",
+    margin: "0 auto", // Center horizontally
   },
   chatBox: {
     flex: 1,
     overflowY: "auto",
-    padding: "10px 0",
+    padding: "15px", // Increased padding
     display: "flex",
     flexDirection: "column",
     gap: "10px",
+    backgroundColor: "#FFFFFF",
+    borderRadius: "8px",
   },
   message: {
     padding: "10px 15px",
     borderRadius: "20px",
-    maxWidth: "70%",
+    maxWidth: "80%",
     wordWrap: "break-word",
   },
   inputBox: {
     display: "flex",
     alignItems: "center",
     gap: "10px",
-    padding: "10px 0",
+    padding: "15px 0",
   },
   input: {
     flex: 1,
-    padding: "10px",
+    padding: "15px",
     borderRadius: "25px",
     border: "1px solid #CCC",
     backgroundColor: "#F9F9F9",
     outline: "none",
   },
   sendButton: {
-    padding: "10px 15px",
+    padding: "12px 18px",
     borderRadius: "50%",
     backgroundColor: "#007BFF",
     color: "white",
     border: "none",
     cursor: "pointer",
-    ':disabled': {
-      backgroundColor: "#ccc",
-      cursor: "not-allowed"
-    }
   },
 };
 

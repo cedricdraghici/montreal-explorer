@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;900&display=swap');
+
+.macbook-pro {
+    background-color: #f5eded;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    height: 100vh; /* Make the container fill the entire viewport */
+    overflow: hidden; /* Prevent scrolling */
+    position: relative; /* Allow absolute positioning of child elements */
+}
+
+.macbook-pro .div {
+    background-color: #f5eded;
+    width: 100%;
+    height: 100%; /* Match the parent's height */
+    position: relative;
+}
+
+.macbook-pro .overlap {
+    position: absolute;
+    width: 864px;
+    height: 100%; /* Match the parent's height */
+    top: 0;
+    left: 864px;
+}
+
+.macbook-pro .rectangle {
+    position: absolute;
+    width: 745px;
+    height: 100%; /* Match the parent's height */
+    top: 0;
+    left: 119px;
+}
+
+.macbook-pro .collapse,
+.macbook-pro .restaurants,
+.macbook-pro .cafes,
+.macbook-pro .historical,
+.macbook-pro .artculture,
+.macbook-pro .parks,
+.macbook-pro .viewlist,
+.macbook-pro .plus,
+.macbook-pro .send-button {
+    position: absolute;
+}
+
+.macbook-pro .collapse {
+    top: 39px;
+    left: 27px;
+}
+
+.macbook-pro .restaurants {
+    width: 139px;
+    top: 39px;
+    left: 98px;
+}
+
+.macbook-pro .cafes {
+    width: 105px;
+    top: 39px;
+    left: 264px;
+}
+
+.macbook-pro .historical {
+    width: 131px;
+    top: 39px;
+    left: 396px;
+}
+
+.macbook-pro .artculture {
+    width: 152px;
+    top: 40px;
+    left: 554px;
+}
+
+.macbook-pro .parks {
+    width: 104px;
+    top: 40px;
+    left: 733px;
+}
+
+.macbook-pro .viewlist {
+    width: 15%; /* Use percentage-based width */
+    height: 5%; /* Adjust height proportionally */
+    bottom: 5%; /* Position relative to the bottom */
+    left: 42%; /* Center horizontally */
+}
+
+.overlap-group {
+    position: absolute;
+    width: 27%;
+    height: 9%;
+    bottom: 2%;
+    left: 11%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-image: url(../assets/rectangle-ask.svg);
+    background-size: cover;
+    border-radius: 28px;
+    overflow: hidden;
+    padding: 0 15px;
+}
+
+.macbook-pro .askany {
+    position: absolute;
+    width: 105%;
+    height: 50%;
+    top: 10%;
+    left: -9%;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1vw;
+    text-align: left;
+    padding-left: 13%;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    border-radius: 15px;
+    color: #333;
+}
+
+.macbook-pro .plus {
+    width: 5%;
+    height: auto;
+    bottom: 3%;
+    top: 60%;
+    left: 3%;
+}
+
+.macbook-pro .plus:hover {
+    filter: brightness(0.7);
+}
+
+.macbook-pro .send-button {
+    width: 5%;
+    height: auto;
+    bottom: 3%;
+    top: 60%;
+    right: 4%;
+}
+
+.macbook-pro .send-button:hover {
+    filter: brightness(0.7);
+}
+
+.macbook-pro .home-container {
+    position: absolute;
+    top: 35px;
+    left: 20px;
+}
+
+.macbook-pro .home-icon {
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+}
+
+.macbook-pro .home-icon:hover {
+    filter: brightness(0.7);
+}
+
+.input-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.askany {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background-color: #e9ecef;
+    border-radius: 8px;
+}
+
+.floating-label {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+    font-size: 16px;
+    transition: all 0.2s ease-in-out;
+    pointer-events: none;
+}
+
+.askany:focus + .floating-label,
+.filled {
+    top: -10px;
+    left: 10px;
+    font-size: 12px;
+    color: #555;
+}
+
+.right-panel {
+    position: absolute;
+    right: 0; /* Anchor to the right side */
+    width: 50%; /* Adjust width as needed */
+    height: 100%;
+    transition: transform 0.4s ease; /* Smooth animation */
+    transform: translateX(0); /* Default position (fully visible) */
+      z-index: 10; /* higher than overlap-group */
+}
+
+.right-panel.collapsed {
+    transform: translateX(-100%); /* Move off-screen to the right */
+}

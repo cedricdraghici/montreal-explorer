@@ -12,6 +12,8 @@ import plusIcon from "../assets/plus.svg";
 import sendButtonIcon from "../assets/send-button.svg";
 import homeIcon from "../assets/home.svg";
 import "./MapViewPage.css";
+import "./MapIFrame.js"
+import MapIFrame from "./MapIFrame.js";
 
 function MapViewPage() {
   const [messages, setMessages] = useState([]);
@@ -123,7 +125,9 @@ function MapViewPage() {
 
         {/* Right panel */}
         <div className={`right-panel ${isCollapsed ? "collapsed" : ""}`}>
-          <img className="rectangle" src={rectangle} alt="Background Rectangle" />
+        <div className="rectangle">
+          <MapIFrame />
+        </div>
           <img className="curved-rec" src={curvedRec} alt="Curved Background" />
           <img
             className="collapse"

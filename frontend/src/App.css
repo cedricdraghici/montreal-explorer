@@ -52,13 +52,13 @@ html, body {
 .nav-list {
   display: flex;
   position: absolute;
-  top: 7.5%;
+  top: 7%;
   left: 44%;
   flex-wrap: nowrap;
   gap: 180px; /* Adjust the spacing between nav items */
-  font-family: 'Roboto', serif;
+  font-family: 'Kanit', serif;
   font-size: 30px;
-  font-weight: 600;
+  font-weight: 400;
   list-style: none;
   margin: 0;
   padding: 0;

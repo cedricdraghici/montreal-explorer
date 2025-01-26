@@ -1,14 +1,17 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, Blueprint
 from flask_cors import CORS
 from openai import OpenAI
 import uuid
 import json
-key = "sk-31b44503ea5243b3be8af9d7cd014122"
+from map import app_map
+
+DEEPSEEK_KEY = "sk-31b44503ea5243b3be8af9d7cd014122"
 
 app = Flask(__name__)
+app.register_blueprint(app_map)
 CORS(app)
 app.debug = True
-client = OpenAI(api_key=key, base_url="https://api.deepseek.com")
+client = OpenAI(api_key=DEEPSEEK_KEY, base_url="https://api.deepseek.com")
 
 sessions = {}
 
@@ -21,7 +24,7 @@ def initialize_session(session_id):
 @app.route("/gpt", methods=["POST"])
 def convo():
     data = request.get_json()
-    
+    print(data)
     # Get or create session ID
     session_id = data.get("session_id")
     if not session_id or session_id not in sessions:

@@ -1,0 +1,56 @@
+/* Apply a specific background only to the About Us container */
+.about-us-container {
+    min-height: 100vh; /* Ensure full-page height */
+    padding: 40px;
+    background-color: #fdf9f1; /* Soft beige background (yellowish) */
+    color: #333; /* Dark gray text for contrast */
+    font-family: "Arial", sans-serif;
+    text-align: center;
+  }
+  
+  .about-us-title {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: #1d4e89; /* Dark blue for the title */
+  }
+  
+  /* Team Grid */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Four columns */
+    gap: 20px; /* Spacing between grid items */
+    justify-items: center; /* Center-align items in the grid */
+  }
+  
+  /* Team Member Card */
+  .team-member {
+    text-align: center;
+    background-color: #ffffff; /* White card background */
+    padding: 20px;
+    border-radius: 10px; /* Slight rounding */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  .team-member-photo {
+    width: 150px; /* 3:4 aspect ratio */
+    height: 200px;
+    object-fit: cover; /* Ensures the photo fits within dimensions */
+    margin-bottom: 10px;
+    border-radius: 10px; /* Slight rounding on the edges */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow around the photo */
+  }
+  
+  .team-member-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1d4e89; /* Dark blue for names */
+    margin-bottom: 5px;
+  }
+  
+  .team-member-intro {
+    font-size: 14px;
+    line-height: 1.4;
+    color: #555; /* Medium gray for intro text */
+  }
+  

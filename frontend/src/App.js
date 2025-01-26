@@ -5,6 +5,8 @@ import Hero from "./components/Hero";
 import HowItWorks from "./components/HowItWorks";
 import MapViewPage from "./components/MapViewPage";
 import Chat from "./components/Chat";
+import DiscoverMontreal from "./components/DiscoverMontreal";
+import AboutUs from "./components/AboutUs";
 import "./App.css";
 
 const LanguageContext = createContext();
@@ -51,6 +53,8 @@ function App() {
               </div>
             }
           />
+          <Route path="/DiscoverMontreal" element={<DiscoverMontreal />} />
+          <Route path="/AboutUs" element={<AboutUs />} />
           <Route path="/map-view" element={<MapViewPage />} />
           <Route path="/chat" element={<Chat />} />
         </Routes>

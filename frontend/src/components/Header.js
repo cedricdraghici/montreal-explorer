@@ -40,7 +40,7 @@ function Header() {
                 <Link to="./DiscoverMontreal">{translations[language].aboutMontreal}</Link>
               </li>
               <li>
-                <a href="#About Us">{translations[language].aboutUs}</a>
+              <Link to="./AboutUs">{translations[language].aboutUs}</Link>
               </li>
             </>
           )}

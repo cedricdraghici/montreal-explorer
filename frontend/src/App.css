@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Newsreader:wght@500;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 /* CSS Reset for Consistent Styling Across Browsers */
 * {
@@ -13,6 +14,7 @@
 /* Ensure the body and html take full height */
 html, body {
   height: 100%;
+  padding-bottom: 1820px;
 }
 
 /* Background Image Styling */
@@ -33,13 +35,13 @@ html, body {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 100px;
+  gap: 13%;
 }
 
 .header {
-  position: relative;
-  top: 48px;
-  left: 25px;
+  position: absolute;
+  top: 5%;
+  left: 4%;
   color: #000;
   font-family: 'Newsreader', serif;
   font-size: 65px;
@@ -50,12 +52,14 @@ html, body {
 /* Navigation List */
 .nav-list {
   display: flex;
-  position: relative;
-  top: 58px;
-  gap: 60px; /* Adjust the spacing between nav items */
-  font-family: 'Poppins', serif;
+  position: absolute;
+  top: 7.5%;
+  left: 44%;
+  flex-wrap: nowrap;
+  gap: 180px; /* Adjust the spacing between nav items */
+  font-family: 'Roboto', serif;
   font-size: 30px;
-  font-weight: 500;
+  font-weight: 600;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -79,6 +83,8 @@ html, body {
 
 .hero-title {
   font-size: 75px; /* Adjust the font size */
+  position: relative;
+  top: 15%;
   font-family: 'Newsreader', serif;
   font-weight: 800; /* Explicit weight for consistent font rendering */
   margin-top: 200px; /* Use margin instead of relative positioning */
@@ -89,6 +95,8 @@ html, body {
   font-size: 43px; /* Smaller subtitle */
   font-family: 'Newsreader', serif;
   font-weight: 800;
+  position: relative;
+  top: 15%;
   margin: 20px 150px; /* Consistent margins for spacing */
   color: rgb(255, 255, 255); /* White text color */
 }
@@ -97,6 +105,8 @@ html, body {
 .hero-button {
   font-size: 40px; /* Adjust button size */
   font-weight: 700;
+  position: relative;
+  top: 15%;
   font-family: 'Newsreader', serif;
   color: #000000dc;
   padding: 10px 20px; /* Space inside the button */
@@ -138,21 +148,24 @@ html, body {
   position: relative;
   top:35px;
   text-align: right;
-  margin-left: 750px;
-  margin-right: 150px;
+  margin-left: 5%;
+  margin-right: 9%;
 }
 
 .step1Details {
-  font-size: 18px;
+  font-size: 20px;
   font-family: "Roboto", serif;
   font-weight: 380;
   color: rgba(90, 90, 90, 0.77);
+  position: absolute;
+  top: 140%;
+  right: 5%;
   line-height: 1.6;
   position: relative;
   top:60px;
   text-align: left;
-  margin-left: 800px;
-  margin-right: 35px;
+  margin-left: 50%;
+  margin-right: 0%;
 }
 
 .step2Title {
@@ -162,43 +175,56 @@ html, body {
   position: relative;
   top:150px;
   text-align: left;
-  margin-left: 50px;
-  margin-right: 750px;
+  margin-left: 2%;
+  margin-right: 8%;
 }
 
 .step2Details {
-  font-size: 18px;
+  font-size: 20px;
   font-family: "Roboto", serif;
   font-weight: 380;
+  position: absolute;
+  top: 340%;
+  left: 1.8%;
   color: rgba(90, 90, 90, 0.77);
   line-height: 1.6;
   position: relative;
   top:165px;
   text-align: left;
   margin-left: 40px;
-  margin-right: 780px;
+  margin-right: 55%;
+}
+
+.step3{
+  margin-bottom: 5000px;
 }
 
 .step3Title {
   font-size: 35px;
   font-family: 'Poppins';
+  position: absolute;
+  top: 490%;
+  right: 15%;
   font-weight: 700;
   position: relative;
   top:230px;
   text-align: right;
-  margin-left: 600px;
-  margin-right: 222px;
+  margin-left: 5%;
+  margin-right: 9%;
 }
 
 .step3Details {
-  font-size: 18px;
+  font-size: 20px;
   font-family: "Roboto", serif;
   font-weight: 380;
+  position: relative;
+  top: 900px;
+  right: 110px;
   color: rgba(90, 90, 90, 0.77);
   line-height: 1.6;
   text-align: left;
   margin-left: 790px;
-  margin-right: 35px;
+  margin-right: 20px;
 }
 
 .HomeIconText{

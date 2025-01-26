@@ -18,7 +18,8 @@ function HowItWorks() {
                 gems, discover options tailored just for you!',
         step3Title: '3. Start Your Adventure',
         step3Details: 'Experience the best of Montreal like never before. With your personalized \
-                guide, navigate the city’s vibrant offerings and create unforgettable memories! '
+                guide, navigate the city’s vibrant offerings and create unforgettable memories! \
+                                                                                  \n             '
       
     },
     fr: {
@@ -37,8 +38,8 @@ function HowItWorks() {
             <p className="step2Details">{translations[language].step2Details}</p>
         </div>
         <div className="Step3">
-        <h2 className="step3Title">{translations[language].step3Title}</h2>
-        <p className="step3Details">{translations[language].step3Details}</p>
+          <h2 className="step3Title">{translations[language].step3Title}</h2>
+          <p className="step3Details">{translations[language].step3Details}</p>
         </div>
     </div>
   )

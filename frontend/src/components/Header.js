@@ -16,7 +16,7 @@ function Header() {
     fr: {
       header: "Montréal Explorer",
       aboutMontreal: "Découvrez la ville",
-      aboutUs: "Notre équipe",
+      aboutUs: "Notre Équipe",
     },
   };
 

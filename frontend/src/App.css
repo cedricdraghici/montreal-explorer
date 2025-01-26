@@ -82,11 +82,9 @@ html, body {
 
 .hero-title {
   font-size: 75px; /* Adjust the font size */
-  position: relative;
-  top: 15%;
   font-family: 'Newsreader', serif;
   font-weight: 800; /* Explicit weight for consistent font rendering */
-  margin-top: 200px; /* Use margin instead of relative positioning */
+  margin-top: 150px; /* Reduce margin to move it higher */
   color: rgb(255, 255, 255); /* White text color */
 }
 
@@ -94,9 +92,7 @@ html, body {
   font-size: 43px; /* Smaller subtitle */
   font-family: 'Newsreader', serif;
   font-weight: 800;
-  position: relative;
-  top: 15%;
-  margin: 20px 150px; /* Consistent margins for spacing */
+  margin: 10px 150px; /* Reduce margins for spacing */
   color: rgb(255, 255, 255); /* White text color */
 }
 
@@ -104,14 +100,12 @@ html, body {
 .hero-button {
   font-size: 40px; /* Adjust button size */
   font-weight: 700;
-  position: relative;
-  top: 15%;
   font-family: 'Newsreader', serif;
   color: #000000dc;
   padding: 10px 20px; /* Space inside the button */
   background-color: #ffffff64; /* Semi-transparent white background */
   border: 0.8px solid #131313; /* Black border */
-  margin-top: 20px; /* Adjust spacing below subtitle */
+  margin-top: 10px; /* Reduce spacing below subtitle */
   border-radius: 15px; /* Rounded corners */
   cursor: pointer; /* Pointer cursor on hover */
   transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
@@ -122,112 +116,77 @@ html, body {
   color: #fff; /* White text on hover */
 }
 
+
 /* How It Works Section */
 .HowItWorks {
-  font-size: 30px;
+  padding: 40px;
   font-family: 'Poppins', sans-serif;
-  position: absolute;
-  top: 104%;
-  font-weight: 800;
-  margin-top: 300px;
+  background-color: hsl(0, 0%, 100%); /* Soft beige background */
+  color: #333;
+}
+
+.title {
+  font-size: 45px;
+  font-weight: bold;
   text-align: center;
+  margin-bottom: 60px;
 }
 
-.HowItWorks{
-  font-size:30px;
-  font-family: 'Poppins';
-  font-weight: 800;
-  position: relative;
-  top:5px;
-  text-align: center;
+/* Step Container */
+.step-container {
+  display: flex;
+  flex-direction: column;
+  gap: 150px;
 }
 
-.step1Title {
-  font-size: 35px;
-  font-family: 'Poppins';
+.step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.step:nth-child(even) {
+  flex-direction: row-reverse; /* Reverse order for even steps */
+}
+
+.step-details {
+  width: 50%;
+}
+
+.step-title {
+  font-size: 30px;
   font-weight: 700;
-  position: absolute;
-  top: 100%;
-  right: 7.5%;
-  text-align: right;
-  margin-left: 5%;
-  margin-right: 9%;
+  margin-bottom: 10px;
 }
 
-.step1Details {
-  font-size: 20px;
-  font-family: "Roboto", serif;
-  font-weight: 380;
-  color: rgba(90, 90, 90, 0.77);
-  position: absolute;
-  top: 140%;
-  right: 5%;
+.step-description {
+  font-size: 18px;
   line-height: 1.6;
-  position: relative;
-  top:60px;
-  text-align: left;
-  margin-left: 50%;
-  margin-right: 0%;
-}
-
-.step2Title {
-  font-size: 35px;
-  font-family: 'Poppins';
-  font-weight: 700;
-  position: absolute;
-  top: 300%;
-  left: 3%;
-  text-align: left;
-  margin-left: 2%;
-  margin-right: 8%;
-}
-
-.step2Details {
-  font-size: 20px;
   font-family: "Roboto", serif;
-  font-weight: 380;
-  position: absolute;
-  top: 340%;
-  left: 1.8%;
   color: rgba(90, 90, 90, 0.77);
-  line-height: 1.6;
-  position: relative;
-  top:165px;
-  text-align: left;
-  margin-left: 40px;
-  margin-right: 55%;
 }
 
-.step3{
-  margin-bottom: 5000px;
+.step-image {
+  width: 40%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-.step3Title {
-  font-size: 35px;
-  font-family: 'Poppins';
-  position: absolute;
-  top: 490%;
-  right: 21%;
-  font-weight: 700;
-  position: relative;
-  top:230px;
-  text-align: right;
-  margin-left: 5%;
-  margin-right: 0.8%;
-}
-
-.step3Details {
-  font-size: 20px;
-  font-family: "Roboto", serif;
-  font-weight: 380;
-  position: relative;
-  top: 900px;
-  right: 110px;
-  color: rgba(90, 90, 90, 0.77);
-  line-height: 1.6;
-  text-align: left;
-  margin-left: 790px;
-  margin-right: 20px;
+/* Media Query for Responsiveness */
+@media (max-width: 768px) {
+  .step {
+    flex-direction: column; /* Stack steps vertically on smaller screens */
+    text-align: center;
+  }
+  .step:nth-child(even) {
+    flex-direction: column; /* Undo reverse for smaller screens */
+  }
+  .step-details,
+  .step-image {
+    width: 100%;
+  }
 }
 
 .HomeIconText{

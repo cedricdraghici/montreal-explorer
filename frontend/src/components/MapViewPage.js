@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
+import { useNavigate } from "react-router-dom";
 import rectangle from "../assets/rectangle.svg";
 import curvedRec from "../assets/curved-rec.svg";
 import collapseIcon from "../assets/collapse.svg";
@@ -13,9 +13,7 @@ import plusIcon from "../assets/plus.svg";
 import sendButtonIcon from "../assets/send-button.svg";
 import homeIcon from "../assets/home.svg";
 import "./MapViewPage.css";
-import "./MapIFrame.js";
 import MapIFrame from "./MapIFrame.js";
-
 
 function MapViewPage() {
   const [messages, setMessages] = useState([]);
@@ -24,7 +22,7 @@ function MapViewPage() {
   const [pendingResponse, setPendingResponse] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const navigate = useNavigate(); // Initialize useNavigate for navigation
+  const navigate = useNavigate();
 
   const handleCollapseClick = () => {
     setIsCollapsed((prev) => !prev);
@@ -117,7 +115,7 @@ function MapViewPage() {
   };
 
   const handleViewListClick = () => {
-    navigate("/viewlist"); // Navigate to the ViewList page
+    navigate("/viewlist");
   };
 
   return (
@@ -131,9 +129,8 @@ function MapViewPage() {
         </div>
 
         {/* Right panel */}
-        <div className={`right-panel ${isCollapsed ? "collapsed" : ""}`}>
-
-          <div className="rectangle">
+        <div className="right-panel">
+          <div className={`rectangle ${isCollapsed ? "collapsed" : ""}`}>
             <MapIFrame />
           </div>
           <img className="curved-rec" src={curvedRec} alt="Curved Background" />
@@ -153,7 +150,6 @@ function MapViewPage() {
             src={viewListIcon}
             alt="View List Icon"
             onClick={handleViewListClick}
-            style={{ cursor: "pointer" }} // Make cursor a pointer for click indication
           />
         </div>
 
@@ -220,6 +216,7 @@ function MapViewPage() {
                   fontFamily:
                     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   transition: "background-color 0.3s ease",
+                  whiteSpace: "pre-wrap",
                 }}
               >
                 {isChatGPTResponse ? <b>{msg.text}</b> : msg.text}

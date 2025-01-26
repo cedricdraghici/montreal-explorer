@@ -19,7 +19,9 @@ app.debug = True
 # Database Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:fuka1010@localhost/montreal_events'
 app.config['SQLALCHEMY_BINDS'] = {
-    'hotel': 'mysql+pymysql://root:fuka1010@localhost/hotel_db'
+    'hotel': 'mysql+pymysql://root:fuka1010@localhost/hotel_db',
+    # 'attraction': 'mysql+pymysql://root:fuka1010@localhost/attraction' 
+
 }
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -137,6 +139,60 @@ class ReviewScore(db.Model):
     score = db.Column(db.Numeric(5, 2))
     category_order = db.Column(db.Integer)
 
+
+# # Attraction Models (using 'attraction' bind key)
+# # --------------------------------------------------
+# class MetroStation(db.Model):
+#     __bind_key__ = 'attraction'
+#     __tablename__ = 'MetroStation'
+#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     metro_station_id = db.Column(db.Integer)
+#     line_order = db.Column(db.Integer)
+#     line_id = db.Column(db.String(255))
+#     line_name = db.Column(db.String(255))
+#     line_symbol = db.Column(db.String(255))
+#     system_name = db.Column(db.String(255))
+#     system_symbol = db.Column(db.String(255))
+#     line_type = db.Column(db.String(255))
+
+# class MetroLine(db.Model):
+#     __bind_key__ = 'attraction'
+#     __tablename__ = 'MetroLine'
+#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     metro_station_id = db.Column(db.Integer, db.ForeignKey('MetroStation.id'))
+#     line_order = db.Column(db.Integer)
+#     line_id = db.Column(db.String(255))
+#     line_name = db.Column(db.String(255))
+#     line_symbol = db.Column(db.String(255))
+#     system_name = db.Column(db.String(255))
+#     system_symbol = db.Column(db.String(255))
+#     line_type = db.Column(db.String(255))
+
+# class Place(db.Model):
+#     __bind_key__ = 'attraction'
+#     __tablename__ = 'Place'
+#     id = db.Column(db.Integer, primary_key=True)
+#     # [Keep all Place columns from your schema]
+#     # Add relationships
+#     offers = db.relationship('Offer', backref='place')
+#     photos = db.relationship('Photo', backref='place')
+
+# class Offer(db.Model):
+#     __bind_key__ = 'attraction'
+#     __tablename__ = 'Offer'
+#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     place_id = db.Column(db.Integer, db.ForeignKey('Place.id'))
+#     # [Keep all Offer columns from your schema]
+
+# class Photo(db.Model):
+#     __bind_key__ = 'attraction'
+#     __tablename__ = 'Photo'
+#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     place_id = db.Column(db.Integer, db.ForeignKey('Place.id'))
+#     # [Keep all Photo columns from your schema]
+
+
+
 # Add these new functions
 def get_hotels_with_details(limit=15):
     try:
@@ -187,6 +243,35 @@ def is_trip_planning(user_message):
     }
     return any(kw in user_message.lower() for kw in trip_keywords)
 
+# def get_attractions_with_details(limit=15):
+#     return Place.query.options(
+#         db.joinedload(Place.offers),
+#         db.joinedload(Place.photos),
+#         db.joinedload(Place.metro_stations).joinedload(MetroStation.metro_lines)
+#     ).limit(limit).all()
+
+# def format_attractions_for_gpt(places):
+#     if not places:
+#         return "No attraction data available"
+    
+#     place_list = []
+#     for place in places:
+#         entry = f"""🏛️ **{place.name}** (Rating: {place.rating}/5)
+# - Address: {place.full_address}
+# - Category: {place.category}
+# - Metro Stations: {', '.join([station.line_name for station in place.metro_stations]) if place.metro_stations else 'None nearby'}
+# - Offers: {len(place.offers)} available deals"""
+#         place_list.append(entry)
+    
+#     return "ATTRACTIONS & LANDMARKS:\n" + "\n\n".join(place_list)
+
+# def is_attraction_query(user_message):
+#     attraction_keywords = {
+#         'attraction', 'landmark', 'museum', 'gallery',
+#         'monument', 'place to visit', 'things to see',
+#         'points of interest', 'tourist spot', 'metro station'
+#     }
+#     return any(kw in user_message.lower() for kw in attraction_keywords)
 
 # GPT endpoint
 @app.route("/gpt", methods=["POST"])
@@ -200,6 +285,25 @@ def convo():
         hotels = get_hotels_with_details()
         is_hotel = is_hotel_query(user_message, hotels)
         is_metro = "metro" in user_message or "station" in user_message
+        # is_attraction = is_attraction_query(user_message)
+
+        # attractions = get_attractions_with_details()
+        # events = get_events_by_date(start_date, end_date) if date_range_required else []
+
+        # context = []
+        # if is_hotel: context.append(format_hotels_for_gpt(hotels))
+        # if is_attraction_query(user_message): context.append(format_attractions_for_gpt(attractions))
+        # if not any([is_hotel, is_metro, is_attraction]): context.append(format_events_for_gpt(events))
+
+        # # Dynamic system prompt
+        # system_prompt = f"""MONTREAL TRAVEL ASSISTANT MODE:
+        # {"".join(context)}
+        
+        # Requirements:
+        # 1. Combine information from hotels, attractions{" and events" if events else ""}
+        # 2. Prioritize locations with metro access
+        # 3. Mention relevant offers/deals where applicable
+        # 4. {"Include date-specific events" if events else "Focus on permanent locations"}"""
 
         # Only extract dates if needed
         date_range_required = not (is_hotel or is_metro)

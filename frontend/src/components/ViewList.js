@@ -18,7 +18,7 @@ function ViewList() {
   useEffect(() => {
     const fetchDays = async () => {
       try {
-        const response = await fetch("/itinerary/days");
+        const response = await fetch("http://10.122.141.184:4000/itinerary/days");
         const data = await response.json();
         if (data.days) {
           setDays(data.days);
@@ -37,8 +37,8 @@ function ViewList() {
       setLoading(true);
       try {
         const [itRes, routeRes] = await Promise.all([
-          fetch(`/itinerary/${selectedDay}`),
-          fetch(`/step_route/${selectedDay}?mode=${selectedMode}`)
+          fetch(`http://10.122.141.184:4000/itinerary/${selectedDay}`),
+          fetch(`http://10.122.141.184:4000/step_route/${selectedDay}?mode=${selectedMode}`)
         ]);
         
         if (!itRes.ok || !routeRes.ok) throw new Error("Data load failed");

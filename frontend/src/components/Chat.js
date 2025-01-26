@@ -1,38 +1,35 @@
 import React, { useState } from "react";
+import { ReactComponent as HomeIcon } from '../homeIcon.svg';
+import { useNavigate } from 'react-router-dom';
 
 function Chat() {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [sessionId, setSessionId] = useState(null);
   const [pendingResponse, setPendingResponse] = useState(false);
 
+  
   const handleSendMessage = async () => {
     if (input.trim() === "" || pendingResponse) return;
 
     const userMessage = input;
     setInput("");
-    
-    const initialLength = messages.length;
-    const assistantMessageIndex = initialLength + 1;
+    const assistantMessageIndex = messages.length + 1;
 
     setMessages(prev => [
       ...prev,
       { text: userMessage, sender: "user" },
       { text: "", sender: "recipient", isStreaming: true }
     ]);
-    
+
     setPendingResponse(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/gpt", {
+      const response = await fetch("http://10.122.141.184:4000/gpt", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          session_id: sessionId,
-          user_message: userMessage
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: sessionId, user_message: userMessage }),
       });
 
       if (!response.ok) throw new Error("Request failed");
@@ -53,7 +50,7 @@ function Chat() {
           if (!chunk.startsWith('data: ')) continue;
 
           try {
-            const data = JSON.parse(chunk.slice(6)); 
+            const data = JSON.parse(chunk.slice(6));
             if (data.session_id) setSessionId(data.session_id);
 
             if (data.delta) {
@@ -66,9 +63,7 @@ function Chat() {
               ));
             }
 
-            if (data.finished) {
-              setPendingResponse(false);
-            }
+            if (data.finished) setPendingResponse(false);
           } catch (error) {
             console.error('Error parsing chunk:', error);
           }
@@ -90,13 +85,22 @@ function Chat() {
   const messageStyles = (message) => ({
     ...styles.message,
     alignSelf: message.sender === "user" ? "flex-end" : "flex-start",
-    backgroundColor: message.sender === "user" ? "#007BFF" : "#f0f0f0",
+    backgroundColor: message.sender === "user" ? "#007BFF" : "#F3F3F3",
     color: message.sender === "user" ? "white" : "black",
     position: 'relative',
   });
 
+  const handleHomeButton = () => navigate('/');
+
   return (
     <div style={styles.container}>
+      <div style={styles.iconBar}>
+        <button className="home-button" onClick={handleHomeButton}>
+          <HomeIcon style={{ width: "24px", height: "24px", color: "#808080" }} />
+          <span className="HomeIconText">Back to Homepage</span>
+        </button>
+      </div>
+
       <div style={styles.chatBox}>
         {messages.map((message, index) => (
           <div key={index} style={messageStyles(message)}>
@@ -114,12 +118,13 @@ function Chat() {
           </div>
         ))}
       </div>
+
       <div style={styles.inputBox}>
         <input
           style={styles.input}
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Type a message..."
+          placeholder="Ask anything..."
           onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
           disabled={pendingResponse}
         />
@@ -128,16 +133,11 @@ function Chat() {
           onClick={handleSendMessage}
           disabled={pendingResponse}
         >
-          {pendingResponse ? '...' : 'Send'}
+          {pendingResponse ? '...' : '➤'}
         </button>
       </div>
-      <style>{`
-        @keyframes pulse {
-          0% { opacity: 1; }
-          50% { opacity: 0.2; }
-          100% { opacity: 1; }
-        }
-      `}</style>
+
+      <style>{`@keyframes pulse { 0% { opacity:1; } 50% { opacity:0.2; } 100% { opacity:1; } }`}</style>
     </div>
   );
 }
@@ -146,49 +146,51 @@ const styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    height: "500px",
-    width: "300px",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-    overflow: "hidden",
+    justifyContent: "space-between",
+    height: "100vh", // Full viewport height
+    width: "100vw", // Full viewport width
+    backgroundColor: "#FFF5F5",
+    padding: "20px",
+    boxSizing: "border-box",
+    margin: "0 auto", // Center horizontally
   },
   chatBox: {
     flex: 1,
-    padding: "10px",
     overflowY: "auto",
+    padding: "15px", // Increased padding
     display: "flex",
     flexDirection: "column",
-    gap: "5px",
+    gap: "10px",
+    backgroundColor: "#FFFFFF",
+    borderRadius: "8px",
   },
   message: {
-    padding: "8px 12px",
-    borderRadius: "16px",
-    maxWidth: "70%",
+    padding: "10px 15px",
+    borderRadius: "20px",
+    maxWidth: "80%",
     wordWrap: "break-word",
   },
   inputBox: {
     display: "flex",
-    padding: "10px",
-    borderTop: "1px solid #ccc",
+    alignItems: "center",
+    gap: "10px",
+    padding: "15px 0",
   },
   input: {
     flex: 1,
-    padding: "8px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
+    padding: "15px",
+    borderRadius: "25px",
+    border: "1px solid #CCC",
+    backgroundColor: "#F9F9F9",
+    outline: "none",
   },
   sendButton: {
-    marginLeft: "10px",
-    padding: "8px 12px",
+    padding: "12px 18px",
+    borderRadius: "50%",
     backgroundColor: "#007BFF",
     color: "white",
     border: "none",
-    borderRadius: "8px",
     cursor: "pointer",
-    '&:disabled': {
-      backgroundColor: "#ccc",
-      cursor: "not-allowed"
-    }
   },
 };
 

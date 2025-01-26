@@ -5,7 +5,7 @@ import homeIcon from "../assets/homeBlue.svg"; // Home Icon import
 function DiscoverMontreal() {
   return (
     
-    <div className="DiscoverMontreal" style={{ padding: '2rem', fontFamily: 'Inter, sans-serif', backgroundColor: '#FFFCF2', color: '#335058' }}>
+    <div className="DiscoverMontreal" style={{ padding: '2rem', fontFamily: 'Newsreader', backgroundColor: '#FFFCF2', color: '#335058' }}>
       <header style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2.5rem', fontWeight: '700', color: '#335058', padding:'1rem'}}>Discover Montreal</h1>
         <p style={{ fontSize: '1.3rem', color: '#335058' }}>

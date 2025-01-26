@@ -2,9 +2,9 @@ import React from 'react';
 
 const MapIFrame = () => {
   return (
-    <div style={{ width: '100%', height: '600px' }}>
+    <div style={{ width: '1900px', height: '100%' }}>
       <iframe
-        src="http://127.0.0.1:4000/map"  // or wherever your Flask app runs
+        src="http://10.122.141.184:4000/map"
         width="100%"
         height="100%"
         style={{ border: 'none' }}

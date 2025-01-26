@@ -231,3 +231,8 @@ html, body {
   background-color: transparent;
   color: #6c6a6a;
 }
+
+.home-button{
+  background: none;
+  border: 0px solid #000;
+}

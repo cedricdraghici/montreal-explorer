@@ -21,7 +21,7 @@ function Hero() {
 
   // Function to handle button click
   const handleStartJourney = () => {
-    navigate('/map-view'); // Navigate to the Map View page
+    navigate('/mapview'); // Navigate to the Map View page
   };
 
   return (

@@ -22,17 +22,28 @@ db = SQLAlchemy(app)
 
 # Event Model
 class Event(db.Model):
-    __tablename__ = 'montreal_events'  
+    __tablename__ = 'events'  
     id = db.Column(db.Integer, primary_key=True)
     titre = db.Column(db.String(255))
+    url_fiche = db.Column(db.Text)
     description = db.Column(db.Text)
     date_debut = db.Column(db.Date)
     date_fin = db.Column(db.Date)
     type_evenement = db.Column(db.String(100))
+    public_cible = db.Column(db.String(100))
     emplacement = db.Column(db.String(100))
+    inscription = db.Column(db.String(50))
+    cout = db.Column(db.String(50))
+    arrondissement = db.Column(db.String(100))
+    titre_adresse = db.Column(db.String(255))
     adresse_principale = db.Column(db.Text)
+    adresse_secondaire = db.Column(db.Text)
+    code_postal = db.Column(db.String(10))
     latitude = db.Column(db.Numeric(10, 8))
     longitude = db.Column(db.Numeric(11, 8))
+    coord_x = db.Column(db.Numeric(10, 1))
+    coord_y = db.Column(db.Numeric(10, 1))
+    created_at = db.Column(db.TIMESTAMP)
 
 client = OpenAI(api_key=key, base_url="https://api.deepseek.com")
 
@@ -44,8 +55,13 @@ def initialize_session(session_id, date_context=""):
             "role": "system",
             "content": f"""You are a Montreal travel expert. Use this event data:
                 {date_context}
-                Provide detailed itineraries with event addresses and dates.
-                Include practical info about costs and registration when available."""
+                Provide detailed itineraries including:
+                - Event locations with full addresses
+                - Dates and times
+                - Costs and registration requirements
+                - Target audiences
+                - Links to official pages
+                Mention transportation options and nearby amenities when possible."""
         }],
         "last_activity": datetime.now()
     }
@@ -61,28 +77,34 @@ def cleanup_sessions():
         del sessions[sid]
 
 def get_events_by_date(start_date, end_date):
-    """Query events happening between dates (inclusive)"""
-    return Event.query.filter(
-        or_(
-            and_(Event.date_debut >= start_date, Event.date_debut <= end_date),
-            and_(Event.date_fin >= start_date, Event.date_fin <= end_date),
-            and_(Event.date_debut <= start_date, Event.date_fin >= end_date)
-        )
-    ).all()
+    try:
+        return Event.query.filter(
+            (Event.date_debut <= end_date) & 
+            (Event.date_fin >= start_date)
+        ).order_by(Event.date_debut).all()
+    except Exception as e:
+        print(f"Database error: {str(e)}")
+        return []
+
 
 def format_events_for_gpt(events):
-    """Create natural language description of events"""
     if not events:
         return "No scheduled events found for these dates"
     
     event_descriptions = []
     for event in events:
-        desc = f"{event.titre} ({event.type_evenement}) at {event.emplacement}: "
-        desc += f"{event.description} from {event.date_debut} to {event.date_fin}"
+        desc = f"""Event: {event.titre}
+        - Type: {event.type_evenement}
+        - Dates: {event.date_debut} to {event.date_fin}
+        - Location: {event.emplacement} ({event.adresse_principale})
+        - Audience: {event.public_cible}
+        - Cost: {event.cout or 'Free'}
+        - Registration: {event.inscription or 'Not required'}
+        - Details: {event.description[:200]}... [Full details: {event.url_fiche}]"""
+        
         event_descriptions.append(desc)
     
-    return "Current Montreal events:\n- " + "\n- ".join(event_descriptions)
-
+    return "Current Montreal events:\n" + "\n\n".join(event_descriptions)
 
 
 @app.route("/gpt", methods=["POST"])
@@ -171,5 +193,25 @@ def end_conversation():
         return {"error": "Invalid session_id"}, 404
 
 
+@app.route("/test-db")
+def test_db():
+    try:
+        event_count = Event.query.count()
+        sample_event = Event.query.first()
+        return {
+            "status": "connected",
+            "total_events": event_count,
+            "sample_event": {
+                "title": sample_event.titre,
+                "dates": f"{sample_event.date_debut} to {sample_event.date_fin}"
+            } if sample_event else None
+        }
+    except Exception as e:
+        return {"error": str(e)}, 500
+
+@app.route("/")
+def home():
+    return "Server is running!", 200
+
 if __name__ == "__main__":
-    app.run()
+    app.run(port=5001)

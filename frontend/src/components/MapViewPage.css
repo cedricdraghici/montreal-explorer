@@ -49,11 +49,19 @@
     left: 27px;
 }
 
+.macbook-pro .collapse:hover {
+    filter: brightness(0.7); /* Hover effect for visual feedback */
+    }
+
 .macbook-pro .restaurants {
     width: 139px;
     top: 39px;
     left: 98px;
 }
+
+.macbook-pro .restaurants:hover {
+    filter: brightness(0.7); /* Hover effect for visual feedback */
+    }
 
 .macbook-pro .cafes {
     width: 105px;
@@ -61,11 +69,19 @@
     left: 264px;
 }
 
+.macbook-pro .cafes:hover {
+    filter: brightness(0.7); /* Hover effect for visual feedback */
+    }
+
 .macbook-pro .historical {
     width: 131px;
     top: 39px;
     left: 396px;
 }
+
+.macbook-pro .historical:hover {
+    filter: brightness(0.7); /* Hover effect for visual feedback */
+    }
 
 .macbook-pro .artculture {
     width: 152px;
@@ -73,11 +89,19 @@
     left: 554px;
 }
 
+.macbook-pro .artculture:hover {
+    filter: brightness(0.7); /* Hover effect for visual feedback */
+    }
+
 .macbook-pro .parks {
     width: 104px;
     top: 40px;
     left: 733px;
 }
+
+.macbook-pro .parks:hover {
+    filter: brightness(0.7); /* Hover effect for visual feedback */
+    }
 
 .macbook-pro .viewlist {
     width: 15%; /* Use percentage-based width */
@@ -85,6 +109,10 @@
     bottom: 5%; /* Position relative to the bottom */
     left: 42%; /* Center horizontally */
 }
+
+.macbook-pro .viewlist:hover {
+    filter: brightness(0.7); /* Hover effect for visual feedback */
+    }
 
 .overlap-group {
     position: absolute;
@@ -208,4 +236,38 @@
 
 .right-panel.collapsed {
     transform: translateX(-100%); /* Move off-screen to the right */
+}
+
+.curved-recfull {
+    position: fixed; /* Ensure it stays in the background */
+    top: 0; /* Align with the top of the viewport */
+    left: 0; /* Align with the left of the viewport */
+    width: 100vw; /* Full width of the viewport */
+    height: 100vh; /* Full height of the viewport */
+    z-index: -1; /* Ensure it's above other elements */
+    object-fit: cover; /* Scale the image to fit the viewport */
+  }
+
+  .viewlist {
+    position: absolute;
+    width: 15%;
+    height: 5%;
+    bottom: 5%;
+    left: 42%;
+    /* etc. */
+  }
+  
+  .mapview {
+    position: absolute;
+    width: 15%;
+    height: 5%;
+    bottom: 5%;
+    left: 67%;
+    z-index: 100; /* Make sure it's above other elements */
+    /* etc. */
+  }
+  
+
+.mapview:hover {
+filter: brightness(0.7); /* Hover effect for visual feedback */
 }

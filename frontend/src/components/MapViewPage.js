@@ -16,6 +16,7 @@ import "./MapViewPage.css";
 import "./MapIFrame.js";
 import MapIFrame from "./MapIFrame.js";
 
+
 function MapViewPage() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -131,6 +132,7 @@ function MapViewPage() {
 
         {/* Right panel */}
         <div className={`right-panel ${isCollapsed ? "collapsed" : ""}`}>
+
           <div className="rectangle">
             <MapIFrame />
           </div>

@@ -1,69 +1,67 @@
 from flask import Flask, jsonify, render_template_string, request, Blueprint
-
-app_map = Blueprint('app_map',__name__)
-
-
 import requests
 
-GOOGLE_MAPS_TOKEN = "AIzaSyCPQ7qn2XeP87kffdvz8EtkHoqrS1IMQaA"
+app_map = Blueprint('app_map', __name__)
+itineraries = {}
 
-# Each waypoint is a dict: {lon, lat, title, desc, stay_minutes, arrival_time (optional)}
-# Make sure these days/waypoints actually exist so day=1 or day=2 doesn't 404
-itineraries = {
-    1: {
-        "waypoints": [
-            {
-                "lon": -73.6151,
-                "lat": 45.4926,
-                "title": "Oratory of St Joseph",
-                "desc": "Canada's largest church",
-                "stay_minutes": 120,
-                "arrival_time": "10:00"
-            },
-            {
-                "lon": -73.5790,
-                "lat": 45.4972,
-                "title": "Museum of Fine Arts",
-                "desc": "Major art museum",
-                "stay_minutes": 60,
-                "arrival_time": "14:00"
-            },
-            {
-                "lon": -73.5794,
-                "lat": 45.5087,
-                "title": "McGill University",
-                "desc": "Historic campus",
-                "stay_minutes": 30,
-                "arrival_time": "16:00"
-            }
-        ]
-    },
-    2: {
-        "waypoints": [
-            {
-                "lon": -73.5565,
-                "lat": 45.5090,
-                "title": "Old Port",
-                "desc": "Historic waterfront district",
-                "stay_minutes": 90
-            },
-            {
-                "lon": -73.5696,
-                "lat": 45.5030,
-                "title": "Notre-Dame Basilica",
-                "desc": "Neo-Gothic masterpiece",
-                "stay_minutes": 30
-            },
-            {
-                "lon": -73.5855,
-                "lat": 45.5043,
-                "title": "Mont Royal Lookout",
-                "desc": "Iconic city viewpoint",
-                "stay_minutes": 60
-            }
-        ]
-    }
-}
+# Single in-memory store for itineraries
+# itineraries = {
+#     1: {
+#         "waypoints": [
+#             {
+#                 "lon": -73.6151,
+#                 "lat": 45.4926,
+#                 "title": "Oratory of St Joseph",
+#                 "desc": "Canada's largest church",
+#                 "stay_minutes": 120,
+#                 "arrival_time": "10:00"
+#             },
+#             {
+#                 "lon": -73.5790,
+#                 "lat": 45.4972,
+#                 "title": "Museum of Fine Arts",
+#                 "desc": "Major art museum",
+#                 "stay_minutes": 60,
+#                 "arrival_time": "14:00"
+#             },
+#             {
+#                 "lon": -73.5794,
+#                 "lat": 45.5087,
+#                 "title": "McGill University",
+#                 "desc": "Historic campus",
+#                 "stay_minutes": 30,
+#                 "arrival_time": "16:00"
+#             }
+#         ]
+#     },
+#     2: {
+#         "waypoints": [
+#             {
+#                 "lon": -73.5565,
+#                 "lat": 45.5090,
+#                 "title": "Old Port",
+#                 "desc": "Historic waterfront district",
+#                 "stay_minutes": 90
+#             },
+#             {
+#                 "lon": -73.5696,
+#                 "lat": 45.5030,
+#                 "title": "Notre-Dame Basilica",
+#                 "desc": "Neo-Gothic masterpiece",
+#                 "stay_minutes": 30
+#             },
+#             {
+#                 "lon": -73.5855,
+#                 "lat": 45.5043,
+#                 "title": "Mont Royal Lookout",
+#                 "desc": "Iconic city viewpoint",
+#                 "stay_minutes": 60
+#             }
+#         ]
+#     }
+# }
+
+GOOGLE_MAPS_TOKEN = "AIzaSyCPQ7qn2XeP87kffdvz8EtkHoqrS1IMQaA"
 
 ########################################
 # Helper function to build step-by-step
@@ -104,7 +102,6 @@ def build_transit_steps(waypoints, mode):
                 "end": destination
             })
 
-        # Add stay time at current waypoint
         stay_time_minutes = waypoints[i].get("stay_minutes", 0)
         total_travel_time += stay_time_minutes
 
@@ -113,68 +110,36 @@ def build_transit_steps(waypoints, mode):
         "total_travel_time_minutes": total_travel_time
     }
 
-
-@app_map.route("/step_route/<int:day>")
-def step_route(day):
-    if day not in itineraries:
-        return jsonify({"error": "Day not found"}), 404
-
-    waypoints = itineraries[day]["waypoints"]
-    mode = request.args.get("mode", "driving").upper()
-
-    # If user selected TRANSIT, do multiple legs
-    if mode == "TRANSIT":
-        result = build_transit_steps(waypoints, mode)
-        return jsonify(result)
-    else:
-        # For driving/walking/bicycling, gather them into one route
-        origin = f"{waypoints[0]['lat']},{waypoints[0]['lon']}"
-        destination = f"{waypoints[-1]['lat']},{waypoints[-1]['lon']}"
-        if len(waypoints) > 2:
-            middle = waypoints[1:-1]
-            waypoints_formatted = "|".join(
-                [f"via:{wp['lat']},{wp['lon']}" for wp in middle]
-            )
-        else:
-            waypoints_formatted = ""
-
-        url = "https://maps.googleapis.com/maps/api/directions/json"
-        params = {
-            "origin": origin,
-            "destination": destination,
-            "waypoints": waypoints_formatted,
-            "mode": mode.lower(),
-            "key": GOOGLE_MAPS_TOKEN
-        }
-        response = requests.get(url, params=params)
-        data = response.json()
-        if data.get("status") == "OK":
-            route = data["routes"][0] if data.get("routes") else None
-            total_route_time = 0
-            if route and route.get("legs"):
-                for leg in route["legs"]:
-                    total_route_time += leg["duration"]["value"]
-            stay_total = sum(wp.get("stay_minutes", 0) for wp in waypoints[:-1])
-            return jsonify({
-                "api_directions": data,
-                "total_travel_time_minutes": round(total_route_time / 60) + stay_total
-            })
-        else:
-            return jsonify({
-                "error": data.get("status", "UNKNOWN_ERROR")
-            }), 400
-
-
 ########################################
-# Itinerary add/remove
+# Itinerary Routes
 ########################################
+
+# Create a new day (returns the newly created day's index)
+@app_map.route("/itinerary/create", methods=["POST"])
+def create_day():
+    existing_days = list(itineraries.keys())
+    new_day = max(existing_days) + 1 if existing_days else 1
+    itineraries[new_day] = {"waypoints": []}
+    return jsonify({"message": "Day created", "day": new_day}), 201
+
+# Get the list of days
+@app_map.route("/itinerary/days")
+def get_days():
+    days = list(itineraries.keys())
+    days.sort()
+    return jsonify({"days": days})
+
+# Add a waypoint to a given day
 @app_map.route("/itinerary/<int:day>/add", methods=["POST"])
 def add_event(day):
     if day not in itineraries:
-        return jsonify({"error": "Day not found"}), 404
+        # If day doesn't exist, create it on the fly (optional behavior)
+        itineraries[day] = {"waypoints": []}
+
     body = request.json
     if not body:
         return jsonify({"error": "No data provided"}), 400
+
     new_wp = {
         "lon": body.get("lon"),
         "lat": body.get("lat"),
@@ -186,7 +151,7 @@ def add_event(day):
     itineraries[day]["waypoints"].append(new_wp)
     return jsonify({"message": "Waypoint added", "itinerary": itineraries[day]}), 200
 
-
+# Remove a waypoint from a given day (by title or index)
 @app_map.route("/itinerary/<int:day>/remove", methods=["DELETE"])
 def remove_event(day):
     if day not in itineraries:
@@ -194,6 +159,7 @@ def remove_event(day):
     body = request.json
     if not body:
         return jsonify({"error": "No data provided"}), 400
+
     wps = itineraries[day]["waypoints"]
     title = body.get("title")
     idx = body.get("index")
@@ -221,24 +187,84 @@ def remove_event(day):
     else:
         return jsonify({"error": "No valid removal criteria (title or index) provided"}), 400
 
-
+# Get all waypoints for a given day
 @app_map.route("/itinerary/<int:day>")
 def get_itinerary(day):
     if day not in itineraries:
         return jsonify({"error": "Day not found"}), 404
     return jsonify(itineraries[day])
 
+# Build step-by-step route or direct route for a given day
+@app_map.route("/step_route/<int:day>")
+def step_route(day):
+    if day not in itineraries:
+        return jsonify({"error": "Day not found"}), 404
 
+    waypoints = itineraries[day]["waypoints"]
+    if not waypoints:
+        return jsonify({"error": "No waypoints for this day"}), 400
+
+    mode = request.args.get("mode", "driving").upper()
+
+    if mode == "TRANSIT":
+        result = build_transit_steps(waypoints, mode)
+        return jsonify(result)
+    else:
+        origin = f"{waypoints[0]['lat']},{waypoints[0]['lon']}"
+        destination = f"{waypoints[-1]['lat']},{waypoints[-1]['lon']}"
+        if len(waypoints) > 2:
+            middle = waypoints[1:-1]
+            waypoints_formatted = "|".join([f"via:{wp['lat']},{wp['lon']}" for wp in middle])
+        else:
+            waypoints_formatted = ""
+
+        url = "https://maps.googleapis.com/maps/api/directions/json"
+        params = {
+            "origin": origin,
+            "destination": destination,
+            "waypoints": waypoints_formatted,
+            "mode": mode.lower(),
+            "key": GOOGLE_MAPS_TOKEN
+        }
+        response = requests.get(url, params=params)
+        data = response.json()
+        if data.get("status") == "OK":
+            route = data["routes"][0] if data.get("routes") else None
+            total_route_time = 0
+            if route and route.get("legs"):
+                for leg in route["legs"]:
+                    total_route_time += leg["duration"]["value"]
+
+            # Sum of stay times (excluding the final stop by convention)
+            stay_total = sum(wp.get("stay_minutes", 0) for wp in waypoints[:-1])
+            return jsonify({
+                "api_directions": data,
+                "total_travel_time_minutes": round(total_route_time / 60) + stay_total
+            })
+        else:
+            return jsonify({"error": data.get("status", "UNKNOWN_ERROR")}), 400
+
+########################################
+# Map Page (Front-end)
+########################################
 @app_map.route("/map")
 def show_map():
-    # We'll just default the map center to day=1's first waypoint for an initial view
-    # but the user can pick Day 2 after it loads.
+    # Determine a default lat/lon based on the first day's first waypoint (if any)
+    days = list(itineraries.keys())
+    default_lat, default_lon = 45.5017, -73.5673  # Default to Montreal
+
+    if days:
+        first_day = min(days)
+        wps = itineraries[first_day].get("waypoints", [])
+        if wps:
+            default_lat, default_lon = wps[0]['lat'], wps[0]['lon']
+
     return render_template_string('''
     <!DOCTYPE html>
     <html>
     <head>
         <meta charset="utf-8">
-        <title>Montreal Itinerary</title>
+        <title>Travel Itinerary</title>
         <link href="https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css" rel="stylesheet">
         <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_TOKEN }}&libraries=geometry"></script>
         <style>
@@ -258,6 +284,10 @@ def show_map():
             .day-button.active {
                 background: #4264fb;
                 color: white;
+            }
+            .add-day-btn {
+                background: #28a745 !important;
+                color: white !important;
             }
             .transport-controls {
                 position: absolute;
@@ -292,7 +322,7 @@ def show_map():
         </style>
     </head>
     <body>
-        <div id="map" style="height: 100vh; width: 100%"></div>
+        <div id="map"></div>
         <div class="info-panel" id="infoPanel">
             <h3>Itinerary Info</h3>
             <p id="details">Select a day and mode to view travel time.</p>
@@ -307,61 +337,41 @@ def show_map():
 
             class ItineraryMap {
                 constructor() {
-                    // Basic map objects
                     this.map = null;
                     this.directionsService = new google.maps.DirectionsService();
                     this.directionsRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
                     this.markers = [];
                     this.polylines = [];
-                    // Default to day 1
-                    this.currentDay = 1;
+                    this.currentDay = null;
                     this.transportMode = 'DRIVING';
+                    this.dayContainer = null;
                     this.initMap();
                 }
 
-                initMap() {
-                    // Hard-code the initial center to day=1's first waypoint
-                    // so we at least see something on load.
-                    // If day=1 doesn't exist or is empty, you'll get a server error
-                    // or an invalid lat/lng if your data is missing.
-                    // Make sure you have day=1 in your itineraries!
+                async initMap() {
+                    // Initialize Google Map
                     this.map = new google.maps.Map(document.getElementById('map'), {
-                        center: new google.maps.LatLng({{ itineraries[1]["waypoints"][0]["lat"] }}, {{ itineraries[1]["waypoints"][0]["lon"] }}),
+                        center: new google.maps.LatLng({{ default_lat }}, {{ default_lon }}),
                         zoom: 13,
                         mapTypeControl: false
                     });
 
-                    this.createDayButtons();
-                    this.createTransportSelector();
                     this.directionsRenderer.setMap(this.map);
 
-                    // Load day 1 itinerary on startup
-                    this.loadDay(1);
+                    // Create the UI containers
+                    this.createTransportSelector();
+                    this.createDayContainer();
+
+                    // Load data
+                    await this.refresh();
                 }
 
-                createDayButtons() {
-                    const dayContainer = document.createElement('div');
-                    dayContainer.innerHTML = `
-                        <button class="day-button active" data-day="1">Day 1</button>
-                        <button class="day-button" data-day="2">Day 2</button>
-                    `;
-                    dayContainer.style.position = 'absolute';
-                    dayContainer.style.top = '10px';
-                    dayContainer.style.left = '10px';
-
-                    // Day button event listener
-                    dayContainer.addEventListener('click', (e) => {
-                        if (e.target.tagName === 'BUTTON') {
-                            const day = parseInt(e.target.dataset.day);
-                            this.currentDay = day;
-                            this.loadDay(day);
-                            document.querySelectorAll('.day-button').forEach(btn => {
-                                btn.classList.toggle('active', parseInt(btn.dataset.day) === day);
-                            });
-                        }
-                    });
-
-                    this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(dayContainer);
+                createDayContainer() {
+                    this.dayContainer = document.createElement('div');
+                    this.dayContainer.style.position = 'absolute';
+                    this.dayContainer.style.top = '10px';
+                    this.dayContainer.style.left = '10px';
+                    this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(this.dayContainer);
                 }
 
                 createTransportSelector() {
@@ -385,6 +395,97 @@ def show_map():
                     this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(transportContainer);
                 }
 
+                async refresh() {
+                    // Fetch the list of days
+                    const days = await this.fetchDays();
+                    // Re-render the day buttons
+                    this.renderDayButtons(days);
+
+                    if (days.length === 0) {
+                        this.currentDay = null;
+                        this.clearMap();
+                        document.getElementById('details').innerHTML = 'No days available. Click "+ Add Day" to create one.';
+                        return;
+                    }
+                    // Ensure currentDay is valid
+                    if (!this.currentDay || !days.includes(this.currentDay)) {
+                        this.currentDay = days[0];
+                    }
+                    // Load the current day
+                    await this.loadDay(this.currentDay);
+                }
+
+                async fetchDays() {
+                    try {
+                        const resp = await fetch('/itinerary/days');
+                        const data = await resp.json();
+                        if (data.days) {
+                            return data.days.sort((a, b) => a - b);
+                        }
+                    } catch (err) {
+                        console.error('Error fetching days:', err);
+                    }
+                    return [];
+                }
+
+                renderDayButtons(days) {
+                    // Clear container before re-render
+                    this.dayContainer.innerHTML = '';
+
+                    days.forEach(day => {
+                        const btn = document.createElement('button');
+                        btn.className = 'day-button';
+                        if (day === this.currentDay) {
+                            btn.classList.add('active');
+                        }
+                        btn.textContent = `Day ${day}`;
+                        btn.dataset.day = day;
+                        btn.addEventListener('click', () => {
+                            this.handleDayChange(day);
+                        });
+                        this.dayContainer.appendChild(btn);
+                    });
+
+                    // Add a button to create a new day
+                    const addDayBtn = document.createElement('button');
+                    addDayBtn.className = 'day-button add-day-btn';
+                    addDayBtn.textContent = '+ Add Day';
+                    addDayBtn.addEventListener('click', () => this.addNewDay());
+                    this.dayContainer.appendChild(addDayBtn);
+                }
+
+                async addNewDay() {
+                    try {
+                        const resp = await fetch('/itinerary/create', {
+                            method: 'POST'
+                        });
+                        const data = await resp.json();
+                        if (data.day) {
+                            this.currentDay = data.day;
+                            await this.refresh();
+                        }
+                    } catch (err) {
+                        console.error('Error adding new day:', err);
+                    }
+                }
+
+                handleDayChange(day) {
+                    this.currentDay = day;
+                    this.loadDay(day);
+                    // Update button styles
+                    Array.from(this.dayContainer.querySelectorAll('.day-button')).forEach(btn => {
+                        const d = parseInt(btn.dataset.day);
+                        btn.classList.toggle('active', d === day);
+                    });
+                }
+
+                clearMap() {
+                    this.markers.forEach(m => m.setMap(null));
+                    this.markers = [];
+                    this.clearPolylines();
+                    this.directionsRenderer.set('directions', null);
+                }
+
                 clearPolylines() {
                     this.polylines.forEach(line => line.setMap(null));
                     this.polylines = [];
@@ -392,55 +493,41 @@ def show_map():
 
                 async loadDay(day) {
                     const infoPanel = document.getElementById('details');
-                    // Clear markers & polylines
-                    this.markers.forEach(m => m.setMap(null));
-                    this.markers = [];
-                    this.clearPolylines();
-                    this.directionsRenderer.set('directions', null);
+                    this.clearMap();
 
-                    let dayWaypoints = null;
-
-                    // 1) First, fetch the actual itinerary for the day
+                    // Fetch day waypoints
+                    let dayData = null;
                     try {
                         const itResp = await fetch(`/itinerary/${day}`);
-                        if (!itResp.ok) {
-                            infoPanel.innerHTML = `<p>Error fetching itinerary for Day ${day} (${itResp.statusText})</p>`;
-                            return;
-                        }
-                        const dayData = await itResp.json();
-                        if (dayData.error) {
-                            infoPanel.innerHTML = `<p>Error: ${dayData.error}</p>`;
-                            return;
-                        }
-                        dayWaypoints = dayData.waypoints || [];
+                        if (!itResp.ok) throw new Error(`Failed to fetch itinerary for Day ${day}`);
+                        dayData = await itResp.json();
                     } catch (err) {
-                        console.error('Error fetching day itinerary:', err);
-                        infoPanel.innerHTML = `<p>Could not retrieve itinerary for Day ${day}.</p>`;
+                        console.error(err);
+                        infoPanel.innerHTML = `<p>Error loading day ${day}</p>`;
                         return;
                     }
 
-                    // If no waypoints, we can't do much
+                    const dayWaypoints = dayData.waypoints || [];
                     if (!dayWaypoints.length) {
-                        infoPanel.innerHTML = `<p>No waypoints found for day ${day}.</p>`;
+                        infoPanel.innerHTML = `<p>No waypoints for Day ${day}</p>`;
                         return;
                     }
 
-                    // 2) Next, get the directions info from /step_route/<day>
+                    // Fetch step route
                     let routeData = null;
                     try {
                         const routeResp = await fetch(`/step_route/${day}?mode=${this.transportMode}`);
                         routeData = await routeResp.json();
                     } catch (err) {
-                        console.error('Error fetching route for day:', err);
-                        infoPanel.innerHTML = `<p>Error fetching route data for Day ${day}.</p>`;
+                        console.error('Error fetching route data:', err);
+                        infoPanel.innerHTML = `<p>Error fetching route data for Day ${day}</p>`;
                         return;
                     }
 
-                    // 3) If transit, decode polylines. If non-transit, use DirectionsRenderer
+                    // Handle transit vs other modes
                     if (this.transportMode === 'TRANSIT') {
-                        // If success
                         if (routeData.legs) {
-                            // Place polylines
+                            // Build polylines from step paths
                             routeData.legs.forEach(leg => {
                                 if (leg.path) {
                                     const decodedPath = google.maps.geometry.encoding.decodePath(leg.path);
@@ -460,70 +547,64 @@ def show_map():
                             `;
                         } else if (routeData.error) {
                             infoPanel.innerHTML = `<p>Error: ${routeData.error}</p>`;
-                        } else {
-                            infoPanel.innerHTML = '<p>No transit route data found.</p>';
                         }
                     } else {
-                        // Non-transit
-                        if (routeData.api_directions && routeData.api_directions.status === 'OK') {
+                        // Driving/Walking/Cycling
+                        if (routeData.api_directions?.status === 'OK') {
+                            // Render route on the client using DirectionsRenderer
+                            this.showClientSideRoute(dayWaypoints);
                             infoPanel.innerHTML = `
                                 <h3>Route Info</h3>
                                 <p>Total Travel Time (including stays): ${routeData.total_travel_time_minutes} minutes</p>
                             `;
-                            // Render client-side directions
-                            this.showClientSideRoute(dayWaypoints);
                         } else if (routeData.error) {
                             infoPanel.innerHTML = `<p>Error: ${routeData.error}</p>`;
-                        } else {
-                            infoPanel.innerHTML = '<p>No data returned.</p>';
                         }
                     }
 
-                    // Finally, place markers for each waypoint
+                    // Add markers
                     dayWaypoints.forEach((wp, i) => {
                         const marker = new google.maps.Marker({
                             position: { lat: wp.lat, lng: wp.lon },
                             map: this.map,
                             title: wp.title,
-                            label: (i+1).toString()
+                            label: (i + 1).toString()
                         });
-                        let arrivalLine = (wp.arrival_time) ? `<p>Arrival: ${wp.arrival_time}</p>` : '';
                         const infoWindow = new google.maps.InfoWindow({
-                            content: `<h3>${wp.title}</h3>
-                                      <p>${wp.desc}</p>
-                                      <p>Stay time: ${wp.stay_minutes} min</p>
-                                      ${arrivalLine}`
+                            content: `
+                                <h3>${wp.title}</h3>
+                                <p>${wp.desc}</p>
+                                <p>Stay time: ${wp.stay_minutes} min</p>
+                                ${wp.arrival_time ? `<p>Arrival: ${wp.arrival_time}</p>` : ''}`
                         });
-                        marker.addListener('click', () => {
-                            infoWindow.open(this.map, marker);
-                        });
+                        marker.addListener('click', () => infoWindow.open(this.map, marker));
                         this.markers.push(marker);
                     });
+
+                    // Re-center map on first waypoint
+                    this.map.panTo({ lat: dayWaypoints[0].lat, lng: dayWaypoints[0].lon });
                 }
 
                 showClientSideRoute(dayWaypoints) {
-                    // Use DirectionsRenderer in the browser for a single route
+                    if (dayWaypoints.length < 2) return;
+
                     const origin = { lat: dayWaypoints[0].lat, lng: dayWaypoints[0].lon };
                     const destination = { lat: dayWaypoints[dayWaypoints.length - 1].lat, lng: dayWaypoints[dayWaypoints.length - 1].lon };
-                    const waypts = [];
-                    if (dayWaypoints.length > 2) {
-                        for (let i = 1; i < dayWaypoints.length - 1; i++) {
-                            waypts.push({
-                                location: { lat: dayWaypoints[i].lat, lng: dayWaypoints[i].lon },
-                                stopover: false
-                            });
-                        }
-                    }
+                    const waypts = dayWaypoints.slice(1, -1).map(wp => ({
+                        location: { lat: wp.lat, lng: wp.lon },
+                        stopover: false
+                    }));
+
                     this.directionsService.route({
-                        origin: origin,
-                        destination: destination,
+                        origin,
+                        destination,
                         waypoints: waypts,
                         travelMode: MODE_MAP[this.transportMode]
                     }, (result, status) => {
                         if (status === 'OK') {
                             this.directionsRenderer.setDirections(result);
                         } else {
-                            console.error('Client side directions error:', status);
+                            console.error('Directions error:', status);
                         }
                     });
                 }
@@ -535,7 +616,4 @@ def show_map():
         </script>
     </body>
     </html>
-    ''', itineraries=itineraries, GOOGLE_MAPS_TOKEN=GOOGLE_MAPS_TOKEN)
-
-
-
+    ''', default_lat=default_lat, default_lon=default_lon, GOOGLE_MAPS_TOKEN=GOOGLE_MAPS_TOKEN)

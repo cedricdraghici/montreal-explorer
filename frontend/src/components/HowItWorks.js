@@ -1,11 +1,14 @@
 import React from "react";
 import { useLanguage } from "../App"; // Import LanguageContext hook
+import pic1 from "../assets/step1.png";
+import pic2 from "../assets/step2.png";
+import pic3 from "../assets/step3.png";
 
 // Placeholder images for steps
 const stepImages = [
-  "https://via.placeholder.com/400x300?text=Step+1+Image",
-  "https://via.placeholder.com/400x300?text=Step+2+Image",
-  "https://via.placeholder.com/400x300?text=Step+3+Image",
+  "../assets/step1.png",
+  "../assets/step2.png",
+  "../assets/step3.png",
 ];
 
 function HowItWorks() {

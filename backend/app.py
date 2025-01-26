@@ -172,6 +172,8 @@ def is_hotel_query(user_message, hotels):
         'book a room', 'where to stay', 'place to stay',
         'recommend hotels', 'find hotels', 'hotel near'
     }
+    hotel_names = [h.name.lower() for h in hotels]
+    
     return any(kw in user_msg for kw in keywords) or any(name in user_msg for name in hotel_names)
 
 
@@ -191,36 +193,42 @@ def convo():
     session_id = data.get("session_id") or str(uuid.uuid4())
 
     try:
-        # Validate dates first
-        start_date = datetime.strptime(data.get('start_date'), '%Y-%m-%d').date()
-        end_date = datetime.strptime(data.get('end_date'), '%Y-%m-%d').date()
-        
-        # Get both datasets
+        # Get hotel data first
         hotels = get_hotels_with_details()
-        events = get_events_by_date(start_date, end_date)
-        
-        # Format contexts
         hotel_context = format_hotels_for_gpt(hotels)
-        event_context = format_events_for_gpt(events)
-        
-        # Create combined prompt
-        system_prompt = f"""COMBINED TRIP PLANNING DATA:
-        
-        AVAILABLE HOTELS:
-        {hotel_context}
-        
-        SCHEDULED EVENTS ({start_date} to {end_date}):
-        {event_context}
-        
-        Create a detailed daily itinerary with:
-        1. Date-specific plans divided into morning/afternoon/evening
-        2. Hotel recommendations near each day's events
-        3. Metro connections between locations
-        4. Price range considerations
-        5. Registration requirements for events
-        6. Include hotel amenities and metro access details"""
-        
-        # Session handling
+
+        # Check for hotel query FIRST
+        if is_hotel_query(user_message, hotels):
+            system_prompt = f"""HOTEL SEARCH MODE:
+            {hotel_context}
+            
+            Requirements:
+            1. Recommend hotels matching the request
+            2. Ignore any date references
+            3. Focus on amenities and metro access"""
+            
+        else:
+            # Only process dates for event/trip planning
+            start_date_str = data.get('start_date')
+            end_date_str = data.get('end_date')
+            
+            if not start_date_str or not end_date_str:
+                return jsonify({"error": "Dates required for event planning"}), 400
+                
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+            
+            events = get_events_by_date(start_date, end_date)
+            event_context = format_events_for_gpt(events)
+            
+            system_prompt = f"""TRIP PLANNING MODE:
+            {hotel_context}
+            {event_context}
+            
+            Requirements:
+            1. Create date-specific itineraries
+            2. Link hotels to event locations"""
+
         if session_id not in sessions:
             sessions[session_id] = {
                 "conversation": [{"role": "system", "content": system_prompt}],
@@ -230,10 +238,10 @@ def convo():
             sessions[session_id]["conversation"][0]["content"] = system_prompt
             sessions[session_id]["last_activity"] = datetime.now()
 
-        # Add user message
-        sessions[session_id]["conversation"].append({"role": "user", "content": user_message})
+        sessions[session_id]["conversation"].append(
+            {"role": "user", "content": user_message}
+        )
 
-        # Streaming response
         def generate():
             full_response = []
             stream = client.chat.completions.create(
@@ -247,16 +255,18 @@ def convo():
                     full_response.append(chunk.choices[0].delta.content)
                     yield f"data: {json.dumps({'content': chunk.choices[0].delta.content})}\n\n"
             
-            sessions[session_id]["conversation"].append({"role": "assistant", "content": ''.join(full_response)})
+            sessions[session_id]["conversation"].append(
+                {"role": "assistant", "content": ''.join(full_response)}
+            )
             yield "data: [DONE]\n\n"
         
+        # MUST RETURN RESPONSE HERE
         return Response(generate(), mimetype="text/event-stream")
-
     except ValueError as e:
-        return jsonify({"error": f"Invalid date format: {str(e)}. Use YYYY-MM-DD format"}), 400
+        return jsonify({"error": f"Date error: {str(e)}"}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
+        
 sessions = {}
 
 def initialize_session(session_id, date_context=""):

@@ -28,10 +28,8 @@
 
 .macbook-pro .rectangle {
     position: absolute;
-    width: 745px;
+    width: 98%;
     height: 100%; /* Match the parent's height */
-    top: 0;
-    left: 119px;
 }
 
 .macbook-pro .collapse,

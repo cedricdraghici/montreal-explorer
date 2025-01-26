@@ -126,6 +126,8 @@ html, body {
 .HowItWorks {
   font-size: 30px;
   font-family: 'Poppins', sans-serif;
+  position: absolute;
+  top: 104%;
   font-weight: 800;
   margin-top: 300px;
   text-align: center;
@@ -144,8 +146,9 @@ html, body {
   font-size: 35px;
   font-family: 'Poppins';
   font-weight: 700;
-  position: relative;
-  top:35px;
+  position: absolute;
+  top: 100%;
+  right: 7.5%;
   text-align: right;
   margin-left: 5%;
   margin-right: 9%;
@@ -171,8 +174,9 @@ html, body {
   font-size: 35px;
   font-family: 'Poppins';
   font-weight: 700;
-  position: relative;
-  top:150px;
+  position: absolute;
+  top: 300%;
+  left: 3%;
   text-align: left;
   margin-left: 2%;
   margin-right: 8%;

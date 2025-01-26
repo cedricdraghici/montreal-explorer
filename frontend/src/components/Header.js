@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom"; // Import useLocation
 import { useLanguage } from "../App";
+import DiscoverMontreal from "./DiscoverMontreal";
 
 function Header() {
   const { language } = useLanguage();
@@ -36,7 +37,7 @@ function Header() {
           {location.pathname === "/" && (
             <>
               <li>
-                <a href="#About Montreal">{translations[language].aboutMontreal}</a>
+                <Link to="./DiscoverMontreal">{translations[language].aboutMontreal}</Link>
               </li>
               <li>
                 <a href="#About Us">{translations[language].aboutUs}</a>
